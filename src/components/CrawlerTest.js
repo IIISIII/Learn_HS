@@ -15,13 +15,9 @@ const CrawlingTest = () => {
     const login = (e) => {
         e.preventDefault();
 
-        const params = { uid: id, upw: password };
-
         console.log("wait for server response");
-        getData(params)
-            .then(res => JSON.stringify(res, null, 2))
-            .then(setData)
-            .catch(console.error);
+
+        
     }
 
     return (
