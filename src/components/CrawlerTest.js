@@ -31,11 +31,16 @@ const CrawlingTest = () => {
 
     return (
         <>
-            <input type="text" name="uid" onChange={ e => setId(e.target.value) }/>
-            <input type="password" name="upw" onChange={ e => setPassword(e.target.value) }/>
-            <button onClick={ login }>login</button>
-            { loading && <p>Loading...</p> }
-            { data && <pre>{ data }</pre> }
+            <div style={{margin:20}}>
+                <h>id:&nbsp;&nbsp;&nbsp;</h>
+                <input type="text" name="uid" onChange={ e => setId(e.target.value) }/>  <br/> 
+                <h>pw: </h>
+                <input type="password" name="upw" onChange={ e => setPassword(e.target.value) }/>
+                <button  style={{margin:10}}onClick={ login }>login</button>
+                <br/> <br/> 
+                { loading && <p> &nbsp;Loading...</p> }
+                { data && <pre>{ data }</pre> }
+            </div>
         </>
     );
 };
