@@ -11,15 +11,13 @@ const MainPage = () => {
     const upw = location.state.upw;
 
     const getData = () => {
+        setLoaing(true);
         getCrawlData({ uid, upw })
             .then(res => JSON.stringify(res.data, null, 2))
             .then(setData)
             .then(() => setLoaing(false))
             .then(() => {
-                setTimeout(() => {
-                    setLoaing(true);
-                    getData();
-                }, 1000)
+                setTimeout(getData, 1000)
             })
             .catch(console.error);
     };
