@@ -22,10 +22,13 @@ const LoginPage = () => {
     }
 
     return (
-        <div onKeyDown={ onKeyPress }>
-            <input type="text" name="uid" onChange={ e => setId(e.target.value) }/>
+        <div onKeyDown={ onKeyPress } style={{margin:20}}>
+            <h>id:&nbsp;&nbsp;&nbsp;</h>
+            <input type="text" name="uid" onChange={ e => setId(e.target.value) }/>  <br/> 
+            <h>pw: </h>
             <input type="password" name="upw" onChange={ e => setPassword(e.target.value) }/>
-            <input type="submit" onClick={ login } value="로그인"/>
+            <button  style={{margin:10}}onClick={ login }>login</button>
+            <br/> <br/> 
         </div>
     );
 };

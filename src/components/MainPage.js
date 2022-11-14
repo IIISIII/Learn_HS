@@ -16,8 +16,8 @@ const MainPage = () => {
             .then(setData)
             .then(() => setLoaing(false))
             .then(() => {
-                setLoaing(true);
                 setTimeout(() => {
+                    setLoaing(true);
                     getData();
                 }, 1000)
             })
