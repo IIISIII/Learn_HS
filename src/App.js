@@ -1,9 +1,17 @@
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
-import CrawlingTest from './components/CrawlerTest';
+
+import LoginPage from './components/LoginPage';
+import MainPage from './components/MainPage';
 
 function App() {
   return (
-    <CrawlingTest/>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={ <LoginPage/> }/>
+        <Route path="/main" element={ <MainPage/> }/>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
