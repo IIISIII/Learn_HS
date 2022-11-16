@@ -20,7 +20,9 @@ const getCrawlData = async (userid, userpassword) => {
     await page.type("input[name=username]", userid);
     await page.type("input[name=password]", userpassword);
     await page.click("input[name=loginbutton]");
-
+    if (typeof window !== 'undefined') {
+        localStorage.setItem('user',{userid,userpassword})
+    }
     const wait = await page.waitForSelector("div.course_lists", { timeout: 5000 })
         .then(() => true)
         .catch(() => false);
