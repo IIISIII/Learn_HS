@@ -9,13 +9,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 
+const loginURL = "https://learn.hansung.ac.kr/login.php";
 const attendURL = "https://learn.hansung.ac.kr/report/ubcompletion/user_progress_a.php?id=";
+const homeworkURL = "http://learn.hansung.ac.kr/mod/assign/index.php?id=";
 
 const getCrawlData = async (userid, userpassword) => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
-    await page.goto("https://learn.hansung.ac.kr/login.php");
+    await page.goto(loginURL);
     
     await page.type("input[name=username]", userid);
     await page.type("input[name=password]", userpassword);
@@ -107,9 +109,86 @@ const getCrawlData = async (userid, userpassword) => {
     return searchDataWithAttend;
 };
 
+const getHomworkData = async (userid, userpassword) => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    await page.goto(loginURL);
+    
+    await page.type("input[name=username]", userid);
+    await page.type("input[name=password]", userpassword);
+    await page.click("input[name=loginbutton]");
+
+    const wait = await page.waitForSelector("div.course_lists", { timeout: 5000 })
+        .then(() => true)
+        .catch(() => false);
+    
+    if(!wait) //login failed
+        return {};
+    
+    const searchData = await page.evaluate(() => {
+        const contentsList = Array.from(page.querySelectorAll("li.course_label_re_02"));
+        const contentObjList = contentsList.map(item => {
+            const titleText = item.querySelector("h3").innerText;
+            const link = item.querySelector(".course_link");
+            const classId = link.href.split("id=")[1];
+
+            let title = titleText;
+            if(title.substring(title.length - 3, 3).toLowerCase() === "new")
+                title = title.substring(0, title.length - 3);
+
+            return { title, link: link.href, classId }
+        });
+        return contentObjList;
+    });
+
+    const searchDataWithHomework = [];
+    for(let a = 0; a < searchData.length; a ++) {
+        let homeworkList = [];
+
+        try {
+            await page.goto(`${homeworkURL}${searchData[a].classId}`);
+
+            await page.waitForSelector("#region-main", { timeout: 5000 });
+
+            homeworkList = await page.evaluate(() => {
+                const contentsList = Array.from(page.querySelectorAll(".generaltable tbody tr"));
+
+                return contentsList.map(item => {
+                    let name, deadline, url, report, attach;
+
+                    try {
+                        const link = item.querySelector(".c1 a");
+                        name = link.innerText;
+                        deadline = item.querySelector(".c2").innerText;
+                        url = link.href;
+                        report = item.querySelector(".c3").innerText === "제출 완료";
+                        attach = [];
+                    } catch(err) {
+                        return {};
+                    }
+
+                    return { name, deadline, url, report, attach };
+                });
+            });
+        } catch(err) {}
+
+        searchDataWithHomework[a] = { ...searchData[a], homework: homeworkList }
+    }
+
+    return searchDataWithHomework;
+};
+
 app.post("/api/crawl", (req, res) => {
     const { uid, upw } = req.body;
     getCrawlData(uid, upw)
+        .then(result => res.json(result))
+        .catch(console.error);
+});
+
+app.post("/api/crawl/homework", (req, res) => {
+    const { uid, upw } = req.body;
+    getHomworkData(uid, upw)
         .then(result => res.json(result))
         .catch(console.error);
 });

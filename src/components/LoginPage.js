@@ -23,9 +23,9 @@ const LoginPage = () => {
 
     return (
         <div onKeyDown={ onKeyPress } style={{margin:20}}>
-            <h>id:&nbsp;&nbsp;&nbsp;</h>
+            <>id:&nbsp;&nbsp;&nbsp;</>
             <input type="text" name="uid" onChange={ e => setId(e.target.value) }/>  <br/> 
-            <h>pw: </h>
+            <>pw: </>
             <input type="password" name="upw" onChange={ e => setPassword(e.target.value) }/>
             <button  style={{margin:10}}onClick={ login }>login</button>
             <br/> <br/> 

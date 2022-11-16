@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router";
-import { getCrawlData } from "./Crawl";
+import { getCrawlData, getHomworkData } from "./Crawl";
 
 const MainPage = () => {
     const [data, setData] = useState();
@@ -12,7 +12,7 @@ const MainPage = () => {
 
     const getData = () => {
         setLoaing(true);
-        getCrawlData({ uid, upw })
+        getHomworkData({ uid, upw })
             .then(res => JSON.stringify(res.data, null, 2))
             .then(setData)
             .then(() => setLoaing(false))
