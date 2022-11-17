@@ -3,7 +3,6 @@ import './App.css';
 
 import LoginPage from './components/LoginPage';
 import MainPage from './components/MainPage';
-import {Nav} from 'react-bootstrap';
 import HomePage from './components/HomePage';
 import NoticePage from './components/NoticePage';
 import AssignPage from './components/AssignPage';

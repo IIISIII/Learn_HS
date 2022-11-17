@@ -1,57 +1,63 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router";
 import { getCrawlData } from "./Crawl";
-import {Nav} from 'react-bootstrap';
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import TabMenu from '../TabMenu';
-import Cookies from 'universal-cookie';
+import TabMenu from "../TabMenu";
 
 const MainPage = () => {
     const [data, setData] = useState();
-    const [loading, setLoaing] = useState(true);
+    const [loading, setLoading] = useState(false);
     const location = useLocation();
-    const [uid, setID] = useState(location.state.uid);
-    const [upw, setPW] = useState(location.state.upw);
-
-
-
+    const [uid, setId] = useState(location.state ? location.state.uid : null);
+    const [upw, setPw] = useState(location.state ? location.state.upw : null);
+    const timeoutId = useRef();
 
     const getData = () => {
+        if(loading || uid === null || upw === null)
+            return;
+
+        setLoading(true);
+        
         getCrawlData({ uid, upw })
             .then(setData)
-            .then(() => setLoaing(false))
-            // .then(() => {
-            //     setTimeout(() => {
-            //         setLoaing(true);
-            //         getData();
-            //     }, 1000)
-            // })
-            .catch(console.error);
+            .then(() => {
+                setLoading(false);
+                clearTimeout(timeoutId.current);
+                timeoutId.current = setTimeout(() => {
+                    getData();
+                }, 5000);
+            });
     };
 
-    useEffect(() => {
-        getData();
-    }, []);
-
-    const click =(n) =>{
-        const target = document.getElementById(n+"-title");
+    const click =(n) => {
+        const target = document.getElementById(n + "-title");
         console.log(target.textContent);
     }
 
-    const result =(data) => 
-        data.data.map((i,n)=>{
-            console.log(data);
-            return(
-                <p key={n} id={n+"-title"} onClick={()=>click(n)}>{i.title}</p>
-                )
-            });
+    const result =({ data }) => data.map((i, n) => <p key={ n } id={ n + "-title" } onClick={ () => click(n) }>{ i.title }</p>);
+
+    useEffect(() => {
+        if(uid == null || upw == null) {
+            setId(sessionStorage.getItem("id"));
+            setPw(sessionStorage.getItem("pw"));
+        }
+        else
+            getData();
+
+        return () => {
+            if(uid != null && upw != null) {
+                sessionStorage.setItem("id", uid);
+                sessionStorage.setItem("pw", upw);
+            }
+            clearTimeout(timeoutId.current);
+        };
+    }, [uid, upw]);
 
     return (
         <>
-            {<TabMenu/>}
+            <TabMenu/>
             { loading && <p>Loading...</p> }
-            { data && result(data)}
+            { data && result(data) }
         </>
     );
 };
