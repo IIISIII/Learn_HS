@@ -2,15 +2,18 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router";
 import TabMenu from "../TabMenu";
 import { getNoticeData } from "./Crawl";
-
+import Pagination from './Pagination'
 const NoticePage = () => {
     const [data, setData] = useState();
     const [loading, setLoading] = useState(false);
     const location = useLocation();
     const [uid, setId] = useState(location.state ? location.state.uid : null);
     const [upw, setPw] = useState(location.state ? location.state.upw : null);
-    const [dataArr, setDataArr] = useState()
+    const [dataArr, setDataArr] = useState(null)
     const timeoutId = useRef();
+    const [page, setPage] = useState(1);
+    const offset = (page - 1) * 10;
+
 
     const getData = () => {
         if(loading || uid === null || upw === null)
@@ -24,57 +27,65 @@ const NoticePage = () => {
                 setLoading(false);
                 timeoutId.current = setTimeout(() => {
                     getData();
+
                 }, 5000);
                 clearTimeout(timeoutId.current);
             });
     };
 
     useEffect(() => {
+
         if(uid == null || upw == null) {
             setId(sessionStorage.getItem("id"));
             setPw(sessionStorage.getItem("pw"));
+            getData();
         }
         else
             getData();
+
+
 
         return () => {
             if(uid != null && upw != null) {
                 sessionStorage.setItem("id", uid);
                 sessionStorage.setItem("pw", upw);
+                
             }
             clearTimeout(timeoutId.current);
         };
     }, [uid, upw]);
 
+    useEffect(() => {
+        data &&setDataArr(load_table(data));
+       }, [data]);
 
-
-    const load_table =(data) =>{
-        const array = new Array();
-        data.data.map((i,key)=>{
-            const title = i.title;
-            i.notification.map((j)=>     
-            {
-                var noti = {};
-                noti.head =  j.title;
-                noti.url = j.url;
-                noti.date = j.date;
-                noti.title = title;
-                array.push(noti);
-            });
-        })
-        console.log(array);
-    return array.sort(function(a,b){return new Date(b.date) - new Date(a.date)});
-    }
+    function load_table(data) {
+    const array = new Array();
+    data.data.map((i, key) => {
+        const title = i.title;
+        i.notification.map((j) => {
+            var noti = {};
+            noti.head = j.title;
+            noti.url = j.url;
+            noti.date = j.date;
+            noti.title = title;
+            array.push(noti);
+        });
+    });
+    console.log(array);
+    return array.sort(function (a, b) { return new Date(b.date) - new Date(a.date); });
+}
 
     const print_table =(arr)=>{
         var count = arr.length;
+        //setDataArr(arr);
         //sessionStorage.setItem("data",arr);
-        return (arr.map((noti,key)=>     
-        (
-            <tbody>
+        return (arr.slice(offset, offset +10).map((noti,key)=>  {   
+        return (
+            <tbody key={key}>
                 <tr>
                     <th style={{padding:"10px"}}>
-                        {count--}
+                        {count-((page-1)*10)-key}
                     </th>
                     <th>
                         {noti.title}
@@ -87,7 +98,8 @@ const NoticePage = () => {
                     </th>
                 </tr>
             </tbody>
-        )))
+        )}
+        ))
     }
          
      
@@ -98,7 +110,7 @@ const NoticePage = () => {
         <>
             <TabMenu/>
             <h1>공지 페이지</h1>
-            { loading && <p>Loading...</p> }
+            {/* { loading && <p>Loading...</p> } */}
             { data && 
             <table style={{ textAlign: "center",margin:"20px", border: "1px solid #dddddd", width:"90%"}}>
                 <thead>
@@ -109,8 +121,19 @@ const NoticePage = () => {
 						<th style={{backgroundColor:"#eeeeee", textAlign:"center"}}>작성일</th>
                     </tr> 
                 </thead>
-                {print_table(load_table(data))}
-            </table> } 
+                { dataArr && print_table(dataArr) }
+            </table> 
+            } 
+
+            {dataArr &&
+            <Pagination 
+            total={dataArr.length} 
+            limit={10}
+            page={page}
+            setPage={setPage}
+            />}
+
+            
         </>
     );
 }
