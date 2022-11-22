@@ -10,6 +10,7 @@ const AssignPage = ()=> {
     const [uid, setId] = useState(location.state ? location.state.uid : null);
     const [upw, setPw] = useState(location.state ? location.state.upw : null);
     const timeoutId = useRef();
+    const [dataArr, setDataArr] = useState()
 
     const getData = () => {
         if(loading || uid === null || upw === null)
@@ -45,13 +46,67 @@ const AssignPage = ()=> {
         };
     }, [uid, upw]);
 
+    const load_table =(data) =>{
+        const array = new Array();
+        data.data.map((i,key)=>{
+            const title = i.title;
+            i.homework.map((k)=>     
+            {
+                var hwork = {};
+                hwork.name =  k.name;
+                hwork.deadline = k.deadline;
+                hwork.url = k.url;
+                hwork.report = k.report;
+                hwork.title = title;
+                array.push(hwork);
+            });
+        })
+        console.log(array);
+    return array.sort(function(a,b){return new Date(b.deadline) - new Date(a.deadline)});
+    }
+
+    const print_table =(arr)=>{
+        var count = arr.length;
+        //sessionStorage.setItem("data",arr);
+        return (arr.map((hwork,key)=>     
+        (
+            <tbody>
+                <tr>
+                    <th style={{padding:"10px"}}>
+                        {count--}
+                    </th>
+                    <th>
+                        {hwork.title}
+                    </th>
+                    <th>
+                        <a href={hwork.url}>{hwork.name}</a>
+                    </th>
+                    <th>
+                        {hwork.deadline}
+                    </th>
+                </tr>
+            </tbody>
+        )))
+    }
 
     return (
         <>
             <TabMenu/>
             <h1>과제 페이지</h1>
             { loading && <p>Loading...</p> }
-            { data && <pre>{ JSON.stringify(data, null, 2) }</pre> }
+            { data && 
+            <table style={{ textAlign: "center",margin:"20px", border: "1px solid #dddddd", width:"90%"}}>
+                <thead>
+                    <tr>
+                        <th style={{backgroundColor:"#eeeeee", textAlign:"center"}}>번호</th>
+                        <th style={{backgroundColor:"#eeeeee", textAlign:"center"}}>과목</th>
+                        <th style={{backgroundColor:"#eeeeee", textAlign:"center"}}>과제</th>
+                        <th style={{backgroundColor:"#eeeeee", textAlign:"center"}}>기한일</th>
+                    </tr> 
+                </thead>
+                {print_table(load_table(data))}
+            </table> } 
+            <pre>{ JSON.stringify(data, null, 2) }</pre>
         </>
     );
 }
