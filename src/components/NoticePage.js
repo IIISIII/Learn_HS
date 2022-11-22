@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router";
 import TabMenu from "../TabMenu";
 import { getNoticeData } from "./Crawl";
-import Pagination from './Pagination'
+import Paginations from './Paginations'
 import Loading from "./Loading";
+import NoticeTable from "./NoticeTable";
 
 const NoticePage = () => {
     const [data, setData] = useState();
@@ -21,7 +22,7 @@ const NoticePage = () => {
         if(loading || uid === null || upw === null)
             return;
 
-        setLoading(true);
+        
         
         getNoticeData({ uid, upw })
             .then(setData)
@@ -93,7 +94,7 @@ const NoticePage = () => {
                         {noti.title}
                     </th>
                     <th>
-                        <a href={noti.url}>{noti.head}</a>
+                        <a style={{textDecorationLine:"none"}} href={noti.url}>{noti.head}</a>
                     </th>
                     <th>
                         {noti.date}
@@ -111,24 +112,18 @@ const NoticePage = () => {
     return (
         <>
             <TabMenu/>
-            <h1>공지 페이지</h1>
-            { loading && <Loading/> }
-            { data && 
-            <table style={{ textAlign: "center",margin:"20px", border: "1px solid #dddddd", width:"90%"}}>
-                <thead>
-                    <tr>
-                        <th style={{backgroundColor:"#eeeeee", textAlign:"center"}}>번호</th>
-						<th style={{backgroundColor:"#eeeeee", textAlign:"center"}}>과목</th>
-						<th style={{backgroundColor:"#eeeeee", textAlign:"center"}}>공지 제목</th>
-						<th style={{backgroundColor:"#eeeeee", textAlign:"center"}}>작성일</th>
-                    </tr> 
-                </thead>
-                { dataArr && print_table(dataArr) }
-            </table> 
-            } 
+
+            { !data && <Loading style={{textAlign:"center"}}/> }
+
+            {data && 
+            <NoticeTable
+
+                print_table = {print_table}
+                dataArr = {dataArr}
+            />}
 
             {dataArr &&
-            <Pagination 
+            <Paginations 
             total={dataArr.length} 
             limit={10}
             page={page}
