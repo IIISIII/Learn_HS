@@ -108,8 +108,9 @@ const NoticePage = () => {
 
     return (
         <>
+
             <TabMenu/>
-            <div style={{backgroundColor:"#F8F9FA"}}>
+            
             { !data && <Loading style={{textAlign:"center"}}/> }
 
             <div style={{marginLeft:"15%", marginRight:"15%"}}>
@@ -127,7 +128,7 @@ const NoticePage = () => {
             setPage={setPage}
             />}
 
-            </div>
+
         </>
     );
 }
