@@ -60,6 +60,15 @@ const getCrawlData = async (userid, userpassword) => {
             let index = -1;
             let at_index = 0;
 
+            const timestampToInt = (timestamp) => {
+                const timeS = timestamp.split(":").reverse();
+                let time = 0;
+                for(let a = 0; a < timeS.length; a ++) {
+                    time += parseInt(timeS[a]) * (60 ** a);
+                }
+                return time;
+            };
+
             for(let a = 0; a < contentsList.length; a ++) {
                 let lectureTitle = "";
                 let current = "";
@@ -67,8 +76,7 @@ const getCrawlData = async (userid, userpassword) => {
                 let currentTime = 0;
 
                 const max = contentsList[a].querySelector(".hidden-sm").innerText.trim();
-                const maxt = max.split(":");
-                maxTime = (60 * parseInt(maxt[0])) + (parseInt(maxt[1]));
+                maxTime = timestampToInt(max);
 
                 const tdList = Array.from(contentsList[a].querySelectorAll(".text-center"));
 
@@ -92,8 +100,7 @@ const getCrawlData = async (userid, userpassword) => {
                     current = buttonNode.parentNode.innerText;
                     try {
                         current = current.split("\n")[0].trim();
-                        const currentt = current.split(":");
-                        currentTime = (60 * parseInt(currentt[0])) + (parseInt(currentt[1]));
+                        currentTime = timestampToInt(current);
                     } catch(err) {}
                 }
 
@@ -156,8 +163,12 @@ const getHomworkData = async (userid, userpassword) => {
 
             homeworkList = await page.evaluate(() => {
                 const contentsList = Array.from(page.querySelectorAll(".generaltable tbody tr"));
+                const contentsObjList = [];
 
-                return contentsList.map(item => {
+                let offset = 0;
+                for(let a = 0; a < contentsList.length; a ++) {
+                    const item = contentsList[a];
+
                     let name, deadline, url, report, attach;
 
                     try {
@@ -168,11 +179,13 @@ const getHomworkData = async (userid, userpassword) => {
                         report = item.querySelector(".c3").innerText === "제출 완료";
                         attach = [];
                     } catch(err) {
-                        return {};
+                        continue;
                     }
 
-                    return { name, deadline, url, report, attach };
-                });
+                    contentsObjList[offset ++] = { name, deadline, url, report, attach };
+                }
+
+                return contentsObjList;
             });
         } catch(err) {}
 
@@ -275,6 +288,7 @@ const getNoticeData = async (userid, userpassword) => {
 
 app.post("/api/crawl", (req, res) => {
     const { uid, upw } = req.body;
+    console.log(`${uid} ${upw}`);
     getCrawlData(uid, upw)
         .then(result => res.json(result))
         .catch(console.error);
