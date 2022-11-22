@@ -105,23 +105,20 @@ const NoticePage = () => {
         ))
     }
          
-     
-    
-
 
     return (
         <>
             <TabMenu/>
-
+            <div style={{backgroundColor:"#F8F9FA"}}>
             { !data && <Loading style={{textAlign:"center"}}/> }
 
-            {data && 
-            <NoticeTable
-
-                print_table = {print_table}
-                dataArr = {dataArr}
-            />}
-
+            <div style={{marginLeft:"15%", marginRight:"15%"}}>
+                {data && 
+                <NoticeTable
+                    print_table = {print_table}
+                    dataArr = {dataArr}
+                />}
+            </div>
             {dataArr &&
             <Paginations 
             total={dataArr.length} 
@@ -130,7 +127,7 @@ const NoticePage = () => {
             setPage={setPage}
             />}
 
-            
+            </div>
         </>
     );
 }
