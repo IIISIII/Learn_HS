@@ -3,6 +3,8 @@ import { useLocation } from "react-router";
 import TabMenu from "../TabMenu";
 import { getNoticeData } from "./Crawl";
 import Pagination from './Pagination'
+import Loading from "./Loading";
+
 const NoticePage = () => {
     const [data, setData] = useState();
     const [loading, setLoading] = useState(false);
@@ -110,7 +112,7 @@ const NoticePage = () => {
         <>
             <TabMenu/>
             <h1>공지 페이지</h1>
-            {/* { loading && <p>Loading...</p> } */}
+            { loading && <Loading/> }
             { data && 
             <table style={{ textAlign: "center",margin:"20px", border: "1px solid #dddddd", width:"90%"}}>
                 <thead>
