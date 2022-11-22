@@ -286,9 +286,32 @@ const getNoticeData = async (userid, userpassword) => {
     return searchData;
 };
 
+const login = async (userid, userpassword) => {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    await page.goto(loginURL);
+    
+    await page.type("input[name=username]", userid);
+    await page.type("input[name=password]", userpassword);
+    await page.click("input[name=loginbutton]");
+
+    const wait = await page.waitForSelector("div.course_lists", { timeout: 5000 })
+        .then(() => true)
+        .catch(() => false);
+    
+    return wait;
+}
+
+app.post("/api/login", (req, res) => {
+    const { uid, upw } = req.body;
+    login(uid, upw)
+        .then(result => res.send)
+        .catch(console.error);
+});
+
 app.post("/api/crawl", (req, res) => {
     const { uid, upw } = req.body;
-    console.log(`${uid} ${upw}`);
     getCrawlData(uid, upw)
         .then(result => res.json(result))
         .catch(console.error);
