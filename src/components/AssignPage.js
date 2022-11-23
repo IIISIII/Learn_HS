@@ -2,9 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router";
 import TabMenu from "../TabMenu";
 import { getHomworkData } from "./Crawl";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from '@fullcalendar/daygrid';
+import Loading from "./Loading";
+
+import '@fullcalendar/common/main.css';
 
 const AssignPage = ()=> {
-    const [data, setData] = useState();
+    const [respond, setRespond] = useState();
     const [loading, setLoading] = useState(false);
     const location = useLocation();
     const [uid, setId] = useState(location.state ? location.state.uid : null);
@@ -16,10 +21,8 @@ const AssignPage = ()=> {
         if(loading || uid === null || upw === null)
             return;
 
-        setLoading(true);
-        
         getHomworkData({ uid, upw })
-            .then(setData)
+            .then(setRespond)
             .then(() => {
                 setLoading(false);
                 clearTimeout(timeoutId.current);
@@ -46,67 +49,54 @@ const AssignPage = ()=> {
         };
     }, [uid, upw]);
 
-    const load_table =(data) =>{
+    useEffect(() => {
+        if(respond !== undefined && respond !== null) {
+            if(respond.data !== undefined || respond.data.length > 0)
+                setDataArr(load_table(respond));
+        }
+    }, [respond]);
+
+    const load_table = (res) =>{
         const array = new Array();
-        data.data.map((i,key)=>{
+        res.data.map(i => {
             const title = i.title;
-            i.homework.map((k)=>     
-            {
-                var hwork = {};
-                hwork.name =  k.name;
-                hwork.deadline = k.deadline;
-                hwork.url = k.url;
-                hwork.report = k.report;
-                hwork.title = title;
-                array.push(hwork);
+            i.homework.map(k => {
+                array.push({ title, ...k });
             });
         })
-        console.log(array);
-    return array.sort(function(a,b){return new Date(b.deadline) - new Date(a.deadline)});
-    }
+        return array.sort(function(a,b){return new Date(b.deadline) - new Date(a.deadline)});
+    };
 
-    const print_table =(arr)=>{
-        var count = arr.length;
-        //sessionStorage.setItem("data",arr);
-        return (arr.map((hwork,key)=>     
-        (
-            <tbody>
-                <tr>
-                    <th style={{padding:"10px"}}>
-                        {count--}
-                    </th>
-                    <th>
-                        {hwork.title}
-                    </th>
-                    <th>
-                        <a href={hwork.url}>{hwork.name}</a>
-                    </th>
-                    <th>
-                        {hwork.deadline}
-                    </th>
-                </tr>
-            </tbody>
-        )))
-    }
+    const converToEvents = (arr) => arr.map(hwork => ({ title: hwork.name, date: hwork.deadline.split(" ")[0], url: hwork.url, color: hwork.report ? "#00FF00" : "#FF0000" }));
+
+    const getCalendar = (events) => {
+        return (
+            <div className='mypage-body'>
+                <div className='body-wrapper box'>
+                    <div className='body-info-container'> 
+                        <div className='calendar-wrapper'>
+                            <FullCalendar
+                                defaultView="dayGridMonth"
+                                plugins={[ dayGridPlugin ]}
+                                events={ events }
+                                eventClick={ (arg) => {
+                                    console.log(arg.event);
+                                } }
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    };
 
     return (
         <>
             <TabMenu/>
-            <h1>과제 페이지</h1>
-            { loading && <p>Loading...</p> }
-            { data && 
-            <table style={{ textAlign: "center",margin:"20px", border: "1px solid #dddddd", width:"90%"}}>
-                <thead>
-                    <tr>
-                        <th style={{backgroundColor:"#eeeeee", textAlign:"center"}}>번호</th>
-                        <th style={{backgroundColor:"#eeeeee", textAlign:"center"}}>과목</th>
-                        <th style={{backgroundColor:"#eeeeee", textAlign:"center"}}>과제</th>
-                        <th style={{backgroundColor:"#eeeeee", textAlign:"center"}}>기한일</th>
-                    </tr> 
-                </thead>
-                {print_table(load_table(data))}
-            </table> } 
-            <pre>{ JSON.stringify(data, null, 2) }</pre>
+            { !respond && <Loading style={ { textAlign:"center" } }/> }
+            <div style={{ marginLeft:"10%", marginRight:"10%" }}>
+                { dataArr && getCalendar(converToEvents(dataArr)) }
+            </div>
         </>
     );
 }

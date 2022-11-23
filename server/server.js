@@ -14,40 +14,46 @@ const attendURL = "https://learn.hansung.ac.kr/report/ubcompletion/user_progress
 const homeworkURL = "http://learn.hansung.ac.kr/mod/assign/index.php?id=";
 const noticeURL = "http://learn.hansung.ac.kr/mod/ubboard/view.php?id=";
 
+const broswers = {};
+const pages = {};
+const templates = {};
+
 const getCrawlData = async (userid, userpassword) => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-
-    await page.goto(loginURL);
-    
-    await page.type("input[name=username]", userid);
-    await page.type("input[name=password]", userpassword);
-    await page.click("input[name=loginbutton]");
-    if (typeof window !== 'undefined') {
-        localStorage.setItem('user',{userid,userpassword})
+    if(broswers[userid] === undefined || broswers[userid] === null) {
+        const result = await login(userid, userpassword);
+        if(!result)
+            return [];
     }
-    const wait = await page.waitForSelector("div.course_lists", { timeout: 5000 })
-        .then(() => true)
-        .catch(() => false);
-    
-    if(!wait) //login failed
-        return [];
+    broswers[userid];
+    const page = pages[userid][0];
 
-    const searchData = await page.evaluate(() => {
-        const contentsList = Array.from(page.querySelectorAll("li.course_label_re_02"));
-        const contentObjList = contentsList.map(item => {
-            const titleText = item.querySelector("h3").innerText;
-            const link = item.querySelector(".course_link");
-            const classId = link.href.split("id=")[1];
+    if(templates[userid] === undefined || templates[userid] === null) {
+        await page.goto("http://learn.hansung.ac.kr/");
+        const wait = await page.waitForSelector("div.course_lists", { timeout: 5000 })
+            .then(() => true)
+            .catch(() => false);
+        
+        if(!wait)
+            return [];
 
-            let title = titleText.trim();
-            if(title.substring(title.length - 3).toLowerCase() === "new")
-                title = title.substring(0, title.length - 3);
+        templates[userid] = await page.evaluate(() => {
+            const contentsList = Array.from(page.querySelectorAll("li.course_label_re_02"));
+            const contentObjList = contentsList.map(item => {
+                const titleText = item.querySelector("h3").innerText;
+                const link = item.querySelector(".course_link");
+                const classId = link.href.split("id=")[1];
 
-            return { title, link: link.href, classId }
+                let title = titleText.trim();
+                if(title.substring(title.length - 3).toLowerCase() === "new")
+                    title = title.substring(0, title.length - 3);
+
+                return { title, link: link.href, classId }
+            });
+            return contentObjList;
         });
-        return contentObjList;
-    });
+    }
+
+    const searchData = [...templates[userid]];
 
     const searchDataWithAttend = [];
     for(let a = 0; a < searchData.length; a ++) {
@@ -114,43 +120,45 @@ const getCrawlData = async (userid, userpassword) => {
         searchDataWithAttend[a] = { ...searchData[a], attendList }
     }
 
-    browser.close();
-
     return searchDataWithAttend;
 };
 
 const getHomworkData = async (userid, userpassword) => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
+    if(broswers[userid] === undefined || broswers[userid] === null) {
+        const result = await login(userid, userpassword);
+        if(!result)
+            return [];
+    }
+    broswers[userid];
+    const page = pages[userid][0];
 
-    await page.goto(loginURL);
-    
-    await page.type("input[name=username]", userid);
-    await page.type("input[name=password]", userpassword);
-    await page.click("input[name=loginbutton]");
+    if(templates[userid] === undefined || templates[userid] === null) {
+        await page.goto("http://learn.hansung.ac.kr/");
+        const wait = await page.waitForSelector("div.course_lists", { timeout: 5000 })
+            .then(() => true)
+            .catch(() => false);
+        
+        if(!wait)
+            return [];
 
-    const wait = await page.waitForSelector("div.course_lists", { timeout: 5000 })
-        .then(() => true)
-        .catch(() => false);
-    
-    if(!wait) //login failed
-        return [];
-    
-    const searchData = await page.evaluate(() => {
-        const contentsList = Array.from(page.querySelectorAll("li.course_label_re_02"));
-        const contentObjList = contentsList.map(item => {
-            const titleText = item.querySelector("h3").innerText;
-            const link = item.querySelector(".course_link");
-            const classId = link.href.split("id=")[1];
+        templates[userid] = await page.evaluate(() => {
+            const contentsList = Array.from(page.querySelectorAll("li.course_label_re_02"));
+            const contentObjList = contentsList.map(item => {
+                const titleText = item.querySelector("h3").innerText;
+                const link = item.querySelector(".course_link");
+                const classId = link.href.split("id=")[1];
 
-            let title = titleText;
-            if(title.substring(title.length - 3, 3).toLowerCase() === "new")
-                title = title.substring(0, title.length - 3);
+                let title = titleText.trim();
+                if(title.substring(title.length - 3).toLowerCase() === "new")
+                    title = title.substring(0, title.length - 3);
 
-            return { title, link: link.href, classId }
+                return { title, link: link.href, classId }
+            });
+            return contentObjList;
         });
-        return contentObjList;
-    });
+    }
+
+    const searchData = [...templates[userid]];
 
     const searchDataWithHomework = [];
     for(let a = 0; a < searchData.length; a ++) {
@@ -192,43 +200,45 @@ const getHomworkData = async (userid, userpassword) => {
         searchDataWithHomework[a] = { ...searchData[a], homework: homeworkList }
     }
 
-    browser.close();
-
     return searchDataWithHomework;
 };
 
 const getNoticeData = async (userid, userpassword) => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
+    if(broswers[userid] === undefined || broswers[userid] === null) {
+        const result = await login(userid, userpassword);
+        if(!result)
+            return [];
+    }
+    broswers[userid];
+    const page = pages[userid][0];
 
-    await page.goto(loginURL);
-    
-    await page.type("input[name=username]", userid);
-    await page.type("input[name=password]", userpassword);
-    await page.click("input[name=loginbutton]");
+    if(templates[userid] === undefined || templates[userid] === null) {
+        await page.goto("http://learn.hansung.ac.kr/");
+        const wait = await page.waitForSelector("div.course_lists", { timeout: 5000 })
+            .then(() => true)
+            .catch(() => false);
+        
+        if(!wait)
+            return [];
 
-    const wait = await page.waitForSelector("div.course_lists", { timeout: 5000 })
-        .then(() => true)
-        .catch(() => false);
-    
-    if(!wait) //login failed
-        return [];
-    
-    const searchData = await page.evaluate(() => {
-        const contentsList = Array.from(document.querySelectorAll("li.course_label_re_02"));
-        const contentObjList = contentsList.map(item => {
-            const titleText = item.querySelector("h3").innerText;
-            const link = item.querySelector(".course_link");
-            const classId = link.href.split("id=")[1];
+        templates[userid] = await page.evaluate(() => {
+            const contentsList = Array.from(page.querySelectorAll("li.course_label_re_02"));
+            const contentObjList = contentsList.map(item => {
+                const titleText = item.querySelector("h3").innerText;
+                const link = item.querySelector(".course_link");
+                const classId = link.href.split("id=")[1];
 
-            let title = titleText;
-            if(title.substring(title.length - 3, 3).toLowerCase() === "new")
-                title = title.substring(0, title.length - 3);
+                let title = titleText.trim();
+                if(title.substring(title.length - 3).toLowerCase() === "new")
+                    title = title.substring(0, title.length - 3);
 
-            return { title, link: link.href, classId }
+                return { title, link: link.href, classId }
+            });
+            return contentObjList;
         });
-        return contentObjList;
-    });
+    }
+
+    const searchData = [...templates[userid]];
 
     for(let a = 0; a < searchData.length; a ++) {
         await page.goto(searchData[a].link);
@@ -281,8 +291,6 @@ const getNoticeData = async (userid, userpassword) => {
         searchData[a] = { ...searchData[a], notification };
     }
 
-    browser.close();
-
     return searchData;
 };
 
@@ -299,6 +307,16 @@ const login = async (userid, userpassword) => {
     const wait = await page.waitForSelector("div.course_lists", { timeout: 5000 })
         .then(() => true)
         .catch(() => false);
+
+    if(wait) {
+        broswers[userid] = browser;
+        pages[userid] = [null, null, null];
+        pages[userid][0] = page;
+        pages[userid][1] = await browser.newPage();
+        await pages[userid][1].goto("http://learn.hansung.ac.kr/");
+        pages[userid][2] = await browser.newPage();
+        await pages[userid][2].goto("http://learn.hansung.ac.kr/");
+    }
     
     return wait;
 }
@@ -306,7 +324,7 @@ const login = async (userid, userpassword) => {
 app.post("/api/login", (req, res) => {
     const { uid, upw } = req.body;
     login(uid, upw)
-        .then(result => res.send)
+        .then(result => res.send(result))
         .catch(console.error);
 });
 

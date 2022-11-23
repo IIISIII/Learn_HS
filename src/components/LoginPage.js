@@ -1,22 +1,41 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../img/로고.png"
 import LoginForm from "./LoginForm"
 import Card from 'react-bootstrap/Card';
+import { loginPromise } from "./Crawl";
 
 const LoginPage = () => {
     const [id, setId] = useState("");
     const [password, setPassword] = useState("");
+    const flag = useRef();
     const navigate = useNavigate();
 
     const login = (e) => {
         e.preventDefault();
-        navigate("/main", {
-            state: {
-                uid: id, 
-                upw: password
-            }
-        });
+        if(flag.isLoading === undefined || !flag.isLoading) {
+            flag.isLoading = true;
+            loginPromise({ uid: id, upw: password })
+                .then(result => {
+                    if(result.data) {
+                        navigate("/main", {
+                            state: {
+                                uid: id, 
+                                upw: password
+                            }
+                        });
+                    }
+                    else
+                        alert("로그인에 실패하였습니다.");
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("로그인에 실패하였습니다.");
+                })
+                .finally(() => {
+                    flag.isLoading = false;
+                });
+        }
     }
 
     const onKeyPress = (e) => {

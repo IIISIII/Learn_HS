@@ -17,3 +17,9 @@ const noticeURL = "/api/crawl/notice";
 export const getNoticeData = (params) => {
     return axios.post(noticeURL, params);
 }
+
+const loginURL = "/api/login";
+
+export const loginPromise = (params) => {
+    return axios.post(loginURL, params);
+}

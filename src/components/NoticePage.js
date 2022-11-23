@@ -21,18 +21,16 @@ const NoticePage = () => {
     const getData = () => {
         if(loading || uid === null || upw === null)
             return;
-
         
-        
+        setLoading(true);
         getNoticeData({ uid, upw })
             .then(setData)
             .then(() => {
                 setLoading(false);
+                clearTimeout(timeoutId.current);
                 timeoutId.current = setTimeout(() => {
                     getData();
-
                 }, 5000);
-                clearTimeout(timeoutId.current);
             });
     };
 
@@ -41,7 +39,6 @@ const NoticePage = () => {
         if(uid == null || upw == null) {
             setId(sessionStorage.getItem("id"));
             setPw(sessionStorage.getItem("pw"));
-            getData();
         }
         else
             getData();
@@ -59,8 +56,8 @@ const NoticePage = () => {
     }, [uid, upw]);
 
     useEffect(() => {
-        data &&setDataArr(load_table(data));
-       }, [data]);
+        data && setDataArr(load_table(data));
+    }, [data]);
 
     function load_table(data) {
     const array = new Array();
@@ -81,14 +78,12 @@ const NoticePage = () => {
 
     const print_table =(arr)=>{
         var count = arr.length;
-        //setDataArr(arr);
-        //sessionStorage.setItem("data",arr);
-        return (arr.slice(offset, offset +10).map((noti,key)=>  {   
+        return (arr.slice(offset, offset + 10).map((noti, key)=>  {   
         return (
             <tbody key={key}>
                 <tr>
-                    <th style={{padding:"10px"}}>
-                        {count-((page-1)*10)-key}
+                    <th style={ { padding: "10px" } }>
+                        { count - ((page - 1) * 10) - key}
                     </th>
                     <th>
                         {noti.title}
@@ -108,7 +103,6 @@ const NoticePage = () => {
 
     return (
         <>
-
             <TabMenu/>
             
             { !data && <Loading style={{textAlign:"center"}}/> }
@@ -120,15 +114,9 @@ const NoticePage = () => {
                     dataArr = {dataArr}
                 />}
             </div>
-            {dataArr &&
-            <Paginations 
-            total={dataArr.length} 
-            limit={10}
-            page={page}
-            setPage={setPage}
-            />}
-
-
+            {
+                dataArr && <Paginations total={dataArr.length} limit={10} page={page} setPage={setPage}/>
+            }
         </>
     );
 }
