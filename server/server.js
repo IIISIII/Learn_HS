@@ -69,9 +69,8 @@ const getCrawlData = async (userid, userpassword) => {
             const timestampToInt = (timestamp) => {
                 const timeS = timestamp.split(":").reverse();
                 let time = 0;
-                for(let a = 0; a < timeS.length; a ++) {
+                for(let a = 0; a < timeS.length; a ++)
                     time += parseInt(timeS[a]) * (60 ** a);
-                }
                 return time;
             };
 
@@ -117,6 +116,27 @@ const getCrawlData = async (userid, userpassword) => {
             }
             return contentObjList;
         });
+
+        try {
+            await page.goto(searchData[a].link);
+            await page.waitForSelector(".total_sections", { timeout: 5000 });
+            const vodIdList = await page.evaluate(() => {
+                const contentsList = Array.from(page.querySelectorAll(".total_sections .modtype_vod .activityinstance a"));
+                return contentsList.map(item => item.href.split("id=")[1]);
+            });
+            
+            let vodIndex = 0;
+            for(let v = 0; v < attendList.length; v ++) {
+                if(attendList[v].length == 0)
+                    continue;
+                for(let atv = 0; atv < attendList[v].length; atv ++) {
+                    const vodLink = `http://learn.hansung.ac.kr/mod/vod/viewer.php?id=${vodIdList[vodIndex ++]}`;
+                    attendList[v][atv] = { ...attendList[v][atv], url: vodLink }
+                }
+            }
+        } catch(err) {}
+
+
         searchDataWithAttend[a] = { ...searchData[a], attendList }
     }
 

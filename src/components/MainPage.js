@@ -68,60 +68,66 @@ const MainPage = () => {
         };
     }, [uid, upw]);
 
-const result =({ data }) => data.map((item)=>item.attendList.map((items)=>items.map((itemlist)=><p>{itemlist.lectureTitle}  {itemlist.maxTime} {itemlist.currentTime}</p>)));
+    const result =({ data }) => data.map(item => item.attendList.map(items => items.map(itemlist => <p>{ itemlist.lectureTitle }  { itemlist.maxTime } { itemlist.currentTime }</p>)));
 
 
 
-const load_table =({data}) =>{
-    const list = new Array();
-    data.map((item)=>{
-        const title = item.title;
-        return item.attendList.map((items)=>
-        items.map((itemlist)=>{
-            var 
-            progress = {}; 
-            progress.head=itemlist.lectureTitle;
-            progress.title=title;
-            progress.max=itemlist.maxTime;
-            progress.cur=itemlist.currentTime;
-            list.push( progress);
-            return progress;
-        }))
-    })
+    const load_table =({data}) =>{
+        const list = new Array();
+        data.map((item)=>{
+            const title = item.title;
+            return item.attendList.map((items)=>
+                items.map((itemlist)=>{
+                    var progress = { title, ...itemlist }; 
+                    // progress.head=itemlist.lectureTitle;
+                    // progress.title=title;
+                    // progress.max=itemlist.maxTime;
+                    // progress.cur=itemlist.currentTime;
+                    list.push(progress);
+                    return progress;
+                })
+            );
+        });
+        
+        return list;
+    }
     
-return list;
-}
-    
-const print_table =(arr)=>{
-    var count = arr.length;
-    //sessionStorage.setItem("data",arr);
-    return (arr.map((info)=>     
-    (
-        <tbody>
-            <tr>
-                <th style={{padding:"10px"}}>
-                    {count--}
-                </th>
-                <th>
-                    {info.title}
-                </th>
-                <th>
-                 {(info.cur/info.max*100).toFixed(0)>100 ? "100": (info.cur/info.max*100).toFixed(0)}% {info.cur>info.max ? "출석완료":"결석"} 
-                </th>
-                <th align="center">
-                
-                <div style={{ width: 100, height: 100, padding:"20px" }}>
-            <CircularProgressbar value={(info.cur/info.max*100).toFixed(0)} text={(info.cur/info.max*100).toFixed(0)>100 ? "100" : (info.cur/info.max*100).toFixed(0)}/>
-                    </div>
-                  
-                    </th>
-                <th>
-                    {info.head}
-                </th>
-            </tr>
-        </tbody>
-    )))
-}
+    const print_table = (arr) => {
+        var count = arr.length;
+        //sessionStorage.setItem("data",arr);
+        return (
+            <tbody>
+            {
+                arr.map((info, index) => {
+                    const percent = (info.currentTime / info.maxTime * 100).toFixed(0);
+                    return (
+                        <tr key={ index }>
+                            <th style={{padding:"10px"}}>
+                                {count--}
+                            </th>
+                            <th>
+                                { info.title }
+                            </th>
+                            <th>
+                                { percent > 100 ? "100" : percent }% { info.currentTime > info.maxTime ? "출석완료" : "결석" } 
+                            </th>
+                            <th align="center">
+                                <div style={{ width: 100, height: 100, padding:"20px" }}>
+                                    <CircularProgressbar value={ percent } text={ percent > 100 ? "100" : percent }/>
+                                </div>
+                            </th>
+                            <th>
+                                <a href={ info.url }>
+                                    { info.lectureTitle }
+                                </a>
+                            </th>
+                        </tr>
+                    );
+                })
+            }
+            </tbody>
+        );
+    };
    
 
 

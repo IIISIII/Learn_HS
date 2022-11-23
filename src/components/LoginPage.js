@@ -4,17 +4,18 @@ import logo from "../img/로고.png"
 import LoginForm from "./LoginForm"
 import Card from 'react-bootstrap/Card';
 import { loginPromise } from "./Crawl";
+import Loading from "./Loading";
 
 const LoginPage = () => {
     const [id, setId] = useState("");
     const [password, setPassword] = useState("");
-    const flag = useRef();
+    const [isLoading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const login = (e) => {
         e.preventDefault();
-        if(flag.isLoading === undefined || !flag.isLoading) {
-            flag.isLoading = true;
+        if(!isLoading) {
+            setLoading(true);
             loginPromise({ uid: id, upw: password })
                 .then(result => {
                     if(result.data) {
@@ -33,7 +34,7 @@ const LoginPage = () => {
                     alert("로그인에 실패하였습니다.");
                 })
                 .finally(() => {
-                    flag.isLoading = false;
+                    setLoading(false);
                 });
         }
     }
@@ -44,19 +45,22 @@ const LoginPage = () => {
     }
 
     return (
-        <Card style={{ marginRight:"35%", marginLeft:"35%", marginTop:"10%"}}>
-        <div style={{marginLeft:"auto", marginRight:"auto"}} onKeyDown={ onKeyPress } >
-            <img style={{  margin: "30px", marginBottom:"60px"}} src={logo} alt="logo"/>
-            <br/>
-            <LoginForm id={id} setId={setId} password={password} setPassword={setPassword}/>
-            {/* <>id:&nbsp;&nbsp;&nbsp;</>
-            <input type="text" name="uid" onChange={ e => setId(e.target.value) }/>  <br/> 
-            <>pw: </>
-            <input type="password" name="upw" onChange={ e => setPassword(e.target.value) }/>
-            <button  style={{margin:10}}onClick={ login }>login</button> */}
-            <br/> <br/> 
-        </div>
-        </Card>
+        <>
+            {
+                !isLoading && (
+                    <Card style={ { marginRight: "35%", marginLeft: "35%", marginTop: "10%" } }>
+                        <div style={ { marginLeft: "10%", marginRight: "10%" } } onKeyDown={ onKeyPress } >
+                            <img style={ { width: "90%", marginLeft: "5%", marginRight: "5%", marginTop: "30px", marginBottom: "30px" } } src={ logo } alt="logo"/>
+                            <br/>
+                            <LoginForm id={ id } setId={ setId } password={ password } setPassword={ setPassword }/>
+                            <br/>
+                        </div>
+                    </Card>
+                )
+            }
+            { isLoading && <Loading/> }
+        </>
+        
     );
 };
 

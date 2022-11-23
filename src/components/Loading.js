@@ -1,7 +1,7 @@
 import { Loader, Oval } from "react-loader-spinner"
 const Loading = () => {
     return (
-        <div style={{marginLeft:"48%", marginTop:"270px"}}>
+        <div style={ { marginLeft:"48%", marginTop:"270px" } }>
             <Oval
                 color="#3d66ba"
                 height={50}
