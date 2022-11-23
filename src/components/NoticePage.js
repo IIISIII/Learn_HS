@@ -8,7 +8,7 @@ import NoticeTable from "./NoticeTable";
 
 const NoticePage = () => {
     const [data, setData] = useState();
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const location = useLocation();
     const [uid, setId] = useState(location.state ? location.state.uid : null);
     const [upw, setPw] = useState(location.state ? location.state.upw : null);
@@ -19,7 +19,7 @@ const NoticePage = () => {
 
 
     const getData = () => {
-        if(loading || uid === null || upw === null)
+        if(!loading || uid === null || upw === null)
             return;
         
         setLoading(true);
@@ -57,7 +57,29 @@ const NoticePage = () => {
 
     useEffect(() => {
         data && setDataArr(load_table(data));
-    }, [data]);
+       }, [data]);
+
+    useEffect(()=>{
+       dataArr && save_arr(dataArr);
+        
+    },[dataArr])
+
+    useEffect(() => {
+        const arr = localStorage.getItem("DataArr") 
+       if(arr!==null){
+        localStorage.removeItem("DataArr");
+        setDataArr(JSON.parse(arr));
+        console.log("exist:" +JSON.parse(arr));
+        
+       }
+    },[])
+
+
+    const save_arr= (dataArr) => {
+        setLoading(false);
+        localStorage.removeItem("DataArr");
+        localStorage.setItem("DataArr",JSON.stringify(dataArr));
+    }
 
     function load_table(data) {
     const array = new Array();
@@ -103,20 +125,27 @@ const NoticePage = () => {
 
     return (
         <>
+            <div style={{backgroundColor:"#F8F9FA", height:"100vh"}}>
             <TabMenu/>
             
-            { !data && <Loading style={{textAlign:"center"}}/> }
+            { loading && <Loading /> }
 
             <div style={{marginLeft:"15%", marginRight:"15%"}}>
-                {data && 
+                {dataArr && 
                 <NoticeTable
                     print_table = {print_table}
                     dataArr = {dataArr}
                 />}
             </div>
-            {
-                dataArr && <Paginations total={dataArr.length} limit={10} page={page} setPage={setPage}/>
-            }
+            {dataArr &&
+            <Paginations 
+            total={dataArr.length} 
+            limit={10}
+            page={page}
+            setPage={setPage}
+            />}
+            </div>
+
         </>
     );
 }
