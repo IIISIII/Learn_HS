@@ -3,7 +3,7 @@ import Table from 'react-bootstrap/Table';
 function NoticeTable({ print_table,dataArr}) {
   return (
     
-    <Table hover style={{ fontSize:"15px", fontFamily:"godic", textAlign: "center",margin:"20px", border: "1px solid #dddddd"}}>
+    <Table hover style={{ fontSize:"15px", fontFamily:"godic", textAlign: "center",margin:"20px", border: "2px solid #dddddd"}}>
     <thead>
         <tr>
             <th scope="col" style={{ textAlign:"center"}}>번호</th>

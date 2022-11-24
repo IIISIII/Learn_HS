@@ -6,7 +6,7 @@ function Paginations({ total, limit, page, setPage }) {
     return (
       <>
       <div style={{marginLeft:"38%"}}>
-        <Pagination style={{textAlign :"center"}}>
+        <Pagination style={{textAlign :"center", fontFamily:"SUIT-Regular",fontWeight:"100",}}>
           <Pagination.Prev onClick={() => setPage(page - 1)} disabled={page === 1}>
             &lt;&nbsp;
           </Pagination.Prev>

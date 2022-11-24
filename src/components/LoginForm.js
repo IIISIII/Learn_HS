@@ -8,11 +8,11 @@ function LoginForm({id,setId,password,setPassword}) {
         controlId="floatingInput"
         label="Student ID"
         className="mb-3"
-        style={{width:"300px",fontSize:"15px", fontFamily:"Rubik"}}
+        style={{width:"300px",fontSize:"15px", fontFamily:"Rubik", color:"#999999"}}
       >
         <Form.Control type="email" style={{}} placeholder="name@example.com"  name="uid" onChange={ e => setId(e.target.value)}/>
       </FloatingLabel>
-      <FloatingLabel controlId="floatingPassword" label="Password" style={{fontSize:"15px", fontFamily:"Rubik"}}>
+      <FloatingLabel controlId="floatingPassword" label="Password" style={{fontSize:"15px", fontFamily:"Rubik", color:"#999999"}}>
         <Form.Control type="password" placeholder="Password"  name="upw" onChange={ e => {console.log(e.target.value);return(setPassword(e.target.value))}}/>
       </FloatingLabel>
     </>

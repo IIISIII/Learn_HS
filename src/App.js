@@ -8,18 +8,18 @@ import NoticePage from './components/NoticePage';
 import AssignPage from './components/AssignPage';
 import Footer from './components/Footer';
 import TabMenu from './components/TabMenu';
-
+import TabMenu_login from './components/TabMenu_login';
 function App() {
   return (
     <BrowserRouter>
-      <TabMenu/>
+      
       <Routes>
         
-        <Route path="/" element={ <LoginPage/> }/>
-        <Route path="/main" element={ <MainPage/> }/>
-        <Route path="/home" element={ <HomePage/> }/>
-        <Route path="/notice" element={ <NoticePage/> }/>
-        <Route path="/assign" element={ <AssignPage/> }/>
+        <Route path="/" element={ <><TabMenu_login/> <LoginPage/></> }/>
+        <Route path="/main" element={<> <TabMenu/><MainPage/> </>}/>
+        <Route path="/home" element={<> <TabMenu/><HomePage/> </>}/>
+        <Route path="/notice" element={<> <TabMenu/><NoticePage/> </>}/>
+        <Route path="/assign" element={<> <TabMenu/><AssignPage/> </>}/>
         
       </Routes>
       <Footer/>
