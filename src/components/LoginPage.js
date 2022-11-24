@@ -5,6 +5,7 @@ import LoginForm from "./LoginForm"
 import Card from 'react-bootstrap/Card';
 import { loginPromise } from "./Crawl";
 import Loading from "./Loading";
+import Button from 'react-bootstrap/Button';
 
 const LoginPage = () => {
     const [id, setId] = useState("");
@@ -48,14 +49,20 @@ const LoginPage = () => {
         <>
             {
                 !isLoading && (
-                    <Card style={ { marginRight: "35%", marginLeft: "35%", marginTop: "10%" } }>
-                        <div style={ { marginLeft: "10%", marginRight: "10%" } } onKeyDown={ onKeyPress } >
-                            <img style={ { width: "90%", marginLeft: "5%", marginRight: "5%", marginTop: "30px", marginBottom: "30px" } } src={ logo } alt="logo"/>
-                            <br/>
-                            <LoginForm id={ id } setId={ setId } password={ password } setPassword={ setPassword }/>
-                            <br/>
-                        </div>
+                    <div style={{paddingTop:"100px" ,paddingBottom:"100px"}}>
+                    <Card style={{ marginRight:"38%", marginLeft:"38%", height:"550px"}}>
+                    <div style={{marginLeft:"auto", marginRight:"auto"}} onKeyDown={ onKeyPress } >
+                        {/* <img style={{ width:200, margin: "30px", marginBottom:"60px"}} src={logo} alt="logo"/> */}
+                        <br/>
+                        <h1 style={{textAlign:"center", paddingBottom:"30px",  marginTop:"30px",fontFamily:"Rubik", fontWeight:"normal", fontSize:"45px"}}>Login</h1>
+                        <LoginForm id={id} setId={setId} password={password} setPassword={setPassword}/>
+                        <Button style={{fontFamily:"Rubik",marginTop:"20px",height:"45px",width:"300px",backgroundColor:"#9F73AB", border:"none", color:"white"}} onClick={(e)=>login(e)} size="lg">
+                    Log in
+                        </Button>
+                        <br/> <br/> 
+                    </div>
                     </Card>
+                </div>
                 )
             }
             { isLoading && <Loading/> }

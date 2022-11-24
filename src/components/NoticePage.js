@@ -61,7 +61,6 @@ const NoticePage = () => {
 
     useEffect(()=>{
        dataArr && save_arr(dataArr);
-        
     },[dataArr])
 
     useEffect(() => {
@@ -125,8 +124,8 @@ const NoticePage = () => {
 
     return (
         <>
-            <div style={{backgroundColor:"#F8F9FA", height:"100vh"}}>
-            <TabMenu/>
+              <div style={{ height:"100vh", paddingTop:"40px"}}>
+
             
             { loading && <Loading /> }
 

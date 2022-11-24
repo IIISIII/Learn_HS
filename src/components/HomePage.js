@@ -11,7 +11,6 @@ const HomePage = ()=> {
 
     return (
         <>
-            <TabMenu/>
             { <h1>홈페이지</h1> }
             <div>
                 <div className='mypage-body' style={ { width: "50%", height: "50%", margin: "0 auto" } }>

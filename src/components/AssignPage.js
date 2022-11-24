@@ -92,7 +92,6 @@ const AssignPage = ()=> {
 
     return (
         <>
-            <TabMenu/>
             { !respond && <Loading style={ { textAlign:"center" } }/> }
             <div style={{ marginLeft:"10%", marginRight:"10%" }}>
                 { dataArr && getCalendar(converToEvents(dataArr)) }

@@ -19,6 +19,7 @@ const MainPage = () => {
     const [upw, setPw] = useState(location.state ? location.state.upw : null);
     const [dataArr, setDataArr] = useState()
     const timeoutId = useRef();
+    const [selectedNum, setSelectedNum] = useState(0);
 
     const getData = () => {
         if(loading || uid === null || upw === null)
@@ -72,13 +73,11 @@ const MainPage = () => {
 
 
 
-    const load_table =({data}) =>{
+    const load_table =({data},num) =>{
         const list = new Array();
-        data.map((item)=>{
-            const title = item.title;
-            return item.attendList.map((items)=>
-                items.map((itemlist)=>{
-                    var progress = { title, ...itemlist }; 
+        data[num].attendList.map((items,week)=>
+            items.map((itemlist)=>{
+                    var progress = { week, ...itemlist }; 
                     // progress.head=itemlist.lectureTitle;
                     // progress.title=title;
                     // progress.max=itemlist.maxTime;
@@ -87,13 +86,13 @@ const MainPage = () => {
                     return progress;
                 })
             );
-        });
+
         
         return list;
     }
     
     const print_table = (arr) => {
-        var count = arr.length;
+    
         //sessionStorage.setItem("data",arr);
         return (
             <tbody>
@@ -103,13 +102,11 @@ const MainPage = () => {
                     return (
                         <tr key={ index }>
                             <th style={{padding:"10px"}}>
-                                {count--}
+                                {info.week+1}
                             </th>
+
                             <th>
-                                { info.title }
-                            </th>
-                            <th>
-                                { percent > 100 ? "100" : percent }% { info.currentTime > info.maxTime ? "출석완료" : "결석" } 
+                               { info.currentTime > info.maxTime ? "출석완료" : "결석" } 
                             </th>
                             <th align="center">
                                 <div style={{ width: 100, height: 100, padding:"20px" }}>
@@ -133,22 +130,24 @@ const MainPage = () => {
 
     return (
         <>
-            <TabMenu/>
             { loading && <p>Loading...</p> }
-            { data && subject(data) }
+            <div 
+                style={{marginLeft:"auto", marginRight: "auto"}}>
+                { data && subject(data) }
+            </div>
            
             { data && 
-            <table style={{ textAlign: "center",margin:"20px", border: "1px solid #dddddd", width:"90%"}}>
+            <table style={{ marginLeft:"100px", marginRight:"auto",width:"1000px",textAlign: "center",margin:"20px", border: "1px solid #dddddd"}}>
                 <thead>
                     <tr>
-                        <th style={{backgroundColor:"#eeeeee", textAlign:"center"}}>번호</th>
-                  <th style={{backgroundColor:"#eeeeee", textAlign:"center"}}>과목</th>
+                        <th style={{backgroundColor:"#eeeeee", textAlign:"center"}}>주차</th>
+
                   <th style={{backgroundColor:"#eeeeee", textAlign:"center"}}>출석여부</th>
                         <th style={{backgroundColor:"#eeeeee", textAlign:"center"}}>진행률</th>
                   <th style={{backgroundColor:"#eeeeee", textAlign:"center"}}>동영상 제목</th>
                     </tr> 
                 </thead>
-                {print_table(load_table(data))}
+                {print_table(load_table(data,selectedNum))}
             </table> }
         </>
     );

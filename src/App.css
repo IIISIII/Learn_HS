@@ -43,3 +43,13 @@
   font-weight: normal;
   font-style: normal;
 }
+
+@font-face {
+	font-family: "Andada_Pro";
+	src: url(./assets/fonts/Andada_Pro/AndadaPro-VariableFont_wght.ttf);
+}
+
+@font-face {
+	font-family: "Rubik";
+	src: url(./assets/fonts/Rubik/Rubik-VariableFont_wght.ttf);
+}
