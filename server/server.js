@@ -329,6 +329,10 @@ const login = async (userid, userpassword) => {
         .catch(() => false);
 
     if(wait) {
+        const name = await page.evaluate(() => {
+            return document.querySelector(".usermenu .user_department").innerText;
+        });
+
         broswers[userid] = browser;
         pages[userid] = [null, null, null];
         pages[userid][0] = page;
@@ -336,9 +340,11 @@ const login = async (userid, userpassword) => {
         await pages[userid][1].goto("http://learn.hansung.ac.kr/");
         pages[userid][2] = await browser.newPage();
         await pages[userid][2].goto("http://learn.hansung.ac.kr/");
+
+        return name;
     }
     
-    return wait;
+    return null;
 }
 
 app.post("/api/login", (req, res) => {

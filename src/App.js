@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import './App.css';
 import 'react-calendar/dist/Calendar.css';
 import '@toast-ui/calendar/dist/toastui-calendar.min.css';
@@ -10,28 +10,38 @@ import AssignPage from './components/AssignPage';
 import Footer from './components/Footer';
 import TabMenu from './components/TabMenu';
 import TabMenu_login from './components/TabMenu_login';
-import { useEffect,useState } from 'react';
+import { useEffect, useState } from 'react';
 function App() {
   const [UserName, setUserName] = useState();
+  const location = useLocation();
 
   useEffect(() => {
-    setUserName("username");
-  },[])
+    if(UserName !== undefined && UserName !== null)
+      sessionStorage.setItem("name", UserName);
+    if(location.pathname !== "/") {
+      if(UserName === undefined || UserName === null) {
+        const s_name = sessionStorage.getItem("name");
+        if(s_name !== undefined && s_name !== null)
+          setUserName(s_name);
+      }
+    }
+  }, [UserName]);
+
   return (
-    <BrowserRouter>
+    <>
+      { location.pathname !== "/" ? <TabMenu name = { UserName }/> : <TabMenu_login/> }
       
       <Routes>
         
-        <Route path="/" element={ <><TabMenu_login/> <LoginPage/></> }/>
-        <Route path="/main" element={<> <TabMenu name = {UserName}/><MainPage/> </>}/>
-        <Route path="/home" element={<> <TabMenu name = {UserName}/><HomePage/> </>}/>
-        <Route path="/notice" element={<> <TabMenu name = {UserName}/><NoticePage/> </>}/>
-        <Route path="/assign" element={<> <TabMenu name = {UserName}/><AssignPage/> </>}/>
+        <Route path="/" element={ <LoginPage onLoginSuccess={ setUserName }/> }/>
+        <Route path="/main" element={ <MainPage/> }/>
+        <Route path="/home" element={ <HomePage/> }/>
+        <Route path="/notice" element={ <NoticePage/> }/>
+        <Route path="/assign" element={ <AssignPage/> }/>
         
       </Routes>
       <Footer/>
-    </BrowserRouter>
-    
+    </>
   );
 }
 

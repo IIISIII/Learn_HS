@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../img/로고.png"
 import LoginForm from "./LoginForm"
@@ -7,9 +7,7 @@ import { loginPromise } from "./Crawl";
 import Loading from "./Loading";
 import Button from 'react-bootstrap/Button';
 
-
-
-const LoginPage = () => {
+const LoginPage = ({ onLoginSuccess = f => {} }) => {
     const [id, setId] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setLoading] = useState(false);
@@ -22,7 +20,9 @@ const LoginPage = () => {
             setLoading(true);
             loginPromise({ uid: id, upw: password })
                 .then(result => {
-                    if(result.data) {
+                    if(result.data !== null) {
+                        onLoginSuccess(result.data);
+                        sessionStorage.setItem("name", result.data);
                         navigate("/main", {
                             state: {
                                 uid: id, 
@@ -42,7 +42,6 @@ const LoginPage = () => {
                 });
         }
     }
-
 
     const onKeyPress = (e) => {
         if(e.key == "Enter")

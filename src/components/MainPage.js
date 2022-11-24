@@ -31,28 +31,29 @@ const MainPage = () => {
         }
       };
     const Button = styled.button`
-  background-color: ${(props) => theme[props.theme].default};
-  color: white;
-  padding: 5px 15px;
-  border-radius: 5px;
-  outline: 0;
-  text-transform: uppercase;
-  margin: 10px 0px;
-  cursor: pointer;
-  box-shadow: 0px 2px 2px lightgray;
-  transition: ease background-color 250ms;
-  &:hover {
-    background-color: ${(props) => theme[props.theme].hover};
-  }
-  &:disabled {
-    cursor: default;
-    opacity: 0.7;
-  }
-`;
+        background-color: ${(props) => theme[props.theme].default};
+        color: white;
+        padding: 5px 15px;
+        border-radius: 5px;
+        outline: 0;
+        text-transform: uppercase;
+        margin: 10px 0px;
+        cursor: pointer;
+        box-shadow: 0px 2px 2px lightgray;
+        transition: ease background-color 250ms;
+        &:hover {
+            background-color: ${(props) => theme[props.theme].hover};
+        }
+        &:disabled {
+            cursor: default;
+            opacity: 0.7;
+        }`
+    ;
 
-Button.defaultProps = {
-  theme: "blue"
-};
+    Button.defaultProps = {
+        theme: "blue"
+    };
+
     const getData = () => {
         if(loading || uid === null || upw === null)
             return;
@@ -71,19 +72,21 @@ Button.defaultProps = {
     };
 
 
-const subject2= ({data})=>
-data.map((n,i)=>{
-    return(
-    <th>
-<Button 
-    key={i} 
-    id={ i + "-title" } 
-    onClick={ () => 
-        setSelectedNum(i) } 
-    variant="contained">{n.title}
-</Button></th>)})
-    //const result =({ data }) => data.map((i, n) => <p key={ n } id={ n + "-title" } onClick={ () => click(n) }>{ i.title }</p>);
- 
+    const subject2= ({ data }) =>
+        data.map((n, i) => {
+            return(
+                <th>
+                    <Button 
+                        key={ i } 
+                        id={ i + "-title" } 
+                        onClick={ () => setSelectedNum(i) } 
+                        variant="contained">{ n.title }
+                    </Button>
+                </th>
+            )
+        });
+                        //const result =({ data }) => data.map((i, n) => <p key={ n } id={ n + "-title" } onClick={ () => click(n) }>{ i.title }</p>);
+                    
 
 
     useEffect(() => {
