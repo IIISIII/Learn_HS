@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
 import 'react-calendar/dist/Calendar.css';
+import '@toast-ui/calendar/dist/toastui-calendar.min.css';
 import LoginPage from './components/LoginPage';
 import MainPage from './components/MainPage';
 import HomePage from './components/HomePage';

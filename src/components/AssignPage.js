@@ -5,7 +5,7 @@ import { getHomworkData } from "./Crawl";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from '@fullcalendar/daygrid';
 import Loading from "./Loading";
-
+import AssignCal from "./AssignCalendar";
 import '@fullcalendar/common/main.css';
 
 const AssignPage = ()=> {
@@ -94,7 +94,7 @@ const AssignPage = ()=> {
         <>
             { !respond && <Loading style={ { textAlign:"center" } }/> }
             <div style={{ marginLeft:"10%", marginRight:"10%" }}>
-                { dataArr && getCalendar(converToEvents(dataArr)) }
+                <AssignCal/>
             </div>
         </>
     );
