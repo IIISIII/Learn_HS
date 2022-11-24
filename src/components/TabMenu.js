@@ -4,7 +4,8 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import logo from "../img/로고.png"
 
-function TabMenu() {
+function TabMenu({name}) {
+
   return (
     <Navbar bg="light" expand="lg" activeKey="">
       <Container>
@@ -21,7 +22,7 @@ function TabMenu() {
             
           </Nav>
           <Nav className='right' style={{paddingRight:"0"}}>
-            <Nav.Link style={{textAlign:"right"}}>님, 안녕하세요 !</Nav.Link>
+            {name && <Nav.Link style={{textAlign:"right"}}>{name}님, 안녕하세요 !</Nav.Link>}
             &nbsp;
             <Nav.Link href="/" style={{textAlign:"right", fontSize:"14px"}}>Log out</Nav.Link>
           </Nav>
