@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router";
-import TabMenu from "../TabMenu";
+import { useNavigate } from "react-router";
 import { getHomworkData } from "./Crawl";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -8,62 +7,77 @@ import Loading from "./Loading";
 import AssignCal from "./AssignCalendar";
 import '@fullcalendar/common/main.css';
 
-const AssignPage = ()=> {
+const AssignPage = ({ sessionKey }) => {
     const [respond, setRespond] = useState();
     const [loading, setLoading] = useState(false);
-    const location = useLocation();
-    const [uid, setId] = useState(location.state ? location.state.uid : null);
-    const [upw, setPw] = useState(location.state ? location.state.upw : null);
     const timeoutId = useRef();
-    const [dataArr, setDataArr] = useState()
+    const [dataArr, setDataArr] = useState();
+    const navigate = useNavigate();
 
     const getData = () => {
-        if(loading || uid === null || upw === null)
+        if(loading)
             return;
 
-        getHomworkData({ uid, upw })
-            .then(setRespond)
-            .then(() => {
+        getHomworkData({ key: sessionKey })
+            .then(res => {
+                if(res.data.length === 0)
+                    navigate("/");
+                else {
+                    setRespond(res);
+                    clearTimeout(timeoutId.current);
+                    timeoutId.current = setTimeout(() => {
+                        getData();
+                    }, 5000);
+                }
+            })
+            .finally(() => {
                 setLoading(false);
-                clearTimeout(timeoutId.current);
-                timeoutId.current = setTimeout(() => {
-                    getData();
-                }, 5000);
             });
     };
 
     useEffect(() => {
-        if(uid == null || upw == null) {
-            setId(sessionStorage.getItem("id"));
-            setPw(sessionStorage.getItem("pw"));
-        }
-        else
+        if(sessionKey === undefined || sessionKey === null)
+            sessionKey = sessionStorage.getItem("sessionKey");
+
+        if(sessionKey === null)
+            navigate("/");
+
+        if(timeoutId.current === undefined) {
+            timeoutId.current = null;
+            clearTimeout(timeoutId.current);
             getData();
+        }
 
         return () => {
-            if(uid != null && upw != null) {
-                sessionStorage.setItem("id", uid);
-                sessionStorage.setItem("pw", upw);
-            }
             clearTimeout(timeoutId.current);
         };
-    }, [uid, upw]);
+    }, []);
 
     useEffect(() => {
         if(respond !== undefined && respond !== null) {
-            if(respond.data !== undefined || respond.data.length > 0)
+            if(respond.data !== undefined && respond.data.length > 0)
                 setDataArr(load_table(respond));
         }
     }, [respond]);
 
-    const load_table = (res) =>{
-        const array = new Array();
-        res.data.map(i => {
-            const title = i.title;
-            i.homework.map(k => {
-                array.push({ title, ...k });
-            });
-        })
+    useEffect(() => {
+        if(dataArr !== undefined && dataArr !== null)
+            localStorage.setItem(`${sessionKey}_assign`, JSON.stringify(dataArr, null, 2));
+        else {
+            const savedData = localStorage.getItem(`${sessionKey}_assign`);
+            if(savedData !== null)
+                setDataArr(JSON.parse(savedData));
+        }
+    }, [dataArr]);
+
+    const load_table = ({ data }) => {
+        const homeworkList = data.map(item => {
+            const title = item.title;
+            return item.homework.map(i => ({ title, ...i }));
+        });
+
+        const array = homeworkList.reduce((acc, cur) => acc.concat(cur));
+
         return array.sort(function(a,b){return new Date(b.deadline) - new Date(a.deadline)});
     };
 
@@ -91,12 +105,12 @@ const AssignPage = ()=> {
     };
 
     return (
-        <>
-            { !respond && <Loading style={ { textAlign:"center" } }/> }
+        <div className="contentBody">
+            { !dataArr && <Loading style={ { textAlign:"center" } }/> }
             <div style={{ marginLeft:"10%", marginRight:"10%" }}>
                 <AssignCal/>
             </div>
-        </>
+        </div>
     );
 }
 export default AssignPage;

@@ -12,34 +12,30 @@ import TabMenu from './components/TabMenu';
 import TabMenu_login from './components/TabMenu_login';
 import { useEffect, useState } from 'react';
 function App() {
-  const [UserName, setUserName] = useState();
+  const [sessionKey, setSessionKey] = useState();
   const location = useLocation();
 
   useEffect(() => {
-    if(UserName !== undefined && UserName !== null)
-      sessionStorage.setItem("name", UserName);
-    if(location.pathname !== "/") {
-      if(UserName === undefined || UserName === null) {
-        const s_name = sessionStorage.getItem("name");
-        if(s_name !== undefined && s_name !== null)
-          setUserName(s_name);
-      }
-    }
-  }, [UserName]);
+    if(sessionKey !== undefined && sessionKey !== null)
+      sessionStorage.setItem("sessionKey", sessionKey);
+    else
+      setSessionKey(sessionStorage.getItem("sessionKey"));
+  }, [sessionKey]);
 
   return (
     <>
-      { location.pathname !== "/" ? <TabMenu name = { UserName }/> : <TabMenu_login/> }
+      { location.pathname !== "/" ? <TabMenu sessionKey={ sessionKey } onLogout={ () => setSessionKey(undefined) }/> : <TabMenu_login/> }
       
       <Routes>
         
-        <Route path="/" element={ <LoginPage onLoginSuccess={ setUserName }/> }/>
-        <Route path="/main" element={ <MainPage/> }/>
-        <Route path="/home" element={ <HomePage/> }/>
-        <Route path="/notice" element={ <NoticePage/> }/>
-        <Route path="/assign" element={ <AssignPage/> }/>
+        <Route path="/" element={ <LoginPage onLoginSuccess={ setSessionKey }/> }/>
+        <Route path="/home" element={ <HomePage sessionKey={ sessionKey }/> }/>
+        <Route path="/main" element={ <MainPage sessionKey={ sessionKey }/> }/>
+        <Route path="/notice" element={ <NoticePage sessionKey={ sessionKey }/> }/>
+        <Route path="/assign" element={ <AssignPage sessionKey={ sessionKey }/> }/>
         
       </Routes>
+
       <Footer/>
     </>
   );

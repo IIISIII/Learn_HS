@@ -1,13 +1,25 @@
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
-import logo from "../img/로고.png"
+import { useNavigate } from 'react-router';
+import logo from "../img/logo.png"
+import { logout } from './Crawl';
 
-function TabMenu({ name })
+function TabMenu({ sessionKey, onLogout })
 {
+  const navigate = useNavigate();
+
+  const logoutFunc = () => {
+    logout({ key: sessionKey })
+      .then(() => {
+        sessionStorage.removeItem("sessionKey");
+        onLogout();
+        navigate("/");
+      });
+  };
+
   return (
-    <Navbar bg="light" expand="lg" activeKey="">
+    <Navbar bg="light" expand="lg" activeKey="/home">
       <Container>
         <Navbar.Brand href="/main">
         <img src={logo} width="70"/>
@@ -22,11 +34,11 @@ function TabMenu({ name })
             
           </Nav>
           {
-            name &&
+            sessionKey &&
             <Nav className='right' style={ { paddingRight: "0" } }>
-              { name && <Nav.Link style={ { textAlign:"right" } }>{ name }님, 안녕하세요 !</Nav.Link> }
+              <Nav.Link style={ { textAlign:"right" } }>{ sessionKey }님, 안녕하세요 !</Nav.Link>
               &nbsp;
-              <Nav.Link style={ { textAlign:"right", fontSize:"14px" } } href="/">Log out</Nav.Link>
+              <Nav.Link style={ { textAlign:"right", fontSize:"14px" } } onClick={ logoutFunc }>Log out</Nav.Link>
             </Nav>
           }
         </Navbar.Collapse>

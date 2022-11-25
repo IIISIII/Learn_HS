@@ -14,20 +14,29 @@ const attendURL = "https://learn.hansung.ac.kr/report/ubcompletion/user_progress
 const homeworkURL = "http://learn.hansung.ac.kr/mod/assign/index.php?id=";
 const noticeURL = "http://learn.hansung.ac.kr/mod/ubboard/view.php?id=";
 
+const sessionKey = {};
+
 const broswers = {};
 const pages = {};
 const templates = {};
 
-const getCrawlData = async (userid, userpassword) => {
-    if(broswers[userid] === undefined || broswers[userid] === null) {
+const getCrawlData = async (key) => {
+    if(key === undefined || key === null)
+        return [];
+
+    if(sessionKey[key] === undefined || sessionKey[key] === null)
+        return [];
+
+    const { userid, userpassword } = sessionKey[key];
+    if(broswers[key] === undefined || broswers[key] === null) {
         const result = await login(userid, userpassword);
         if(!result)
             return [];
     }
-    broswers[userid];
-    const page = pages[userid][0];
+    const page = pages[key][0];
+    
 
-    if(templates[userid] === undefined || templates[userid] === null) {
+    if(templates[key] === undefined || templates[key] === null) {
         await page.goto("http://learn.hansung.ac.kr/");
         const wait = await page.waitForSelector("div.course_lists", { timeout: 5000 })
             .then(() => true)
@@ -36,8 +45,8 @@ const getCrawlData = async (userid, userpassword) => {
         if(!wait)
             return [];
 
-        templates[userid] = await page.evaluate(() => {
-            const contentsList = Array.from(page.querySelectorAll("li.course_label_re_02"));
+        templates[key] = await page.evaluate(() => {
+            const contentsList = Array.from(document.querySelectorAll("li.course_label_re_02"));
             const contentObjList = contentsList.map(item => {
                 const titleText = item.querySelector("h3").innerText;
                 const link = item.querySelector(".course_link");
@@ -53,14 +62,15 @@ const getCrawlData = async (userid, userpassword) => {
         });
     }
 
-    const searchData = [...templates[userid]];
+    const template = templates[key];
+    const searchData = [...template];
 
     const searchDataWithAttend = [];
     for(let a = 0; a < searchData.length; a ++) {
         await page.goto(`${attendURL}${searchData[a].classId}`);
         await page.waitForSelector(".user_progress_table", { timeout: 5000 })
         const attendList = await page.evaluate(() => {
-            const contentsList = Array.from(page.querySelectorAll(".user_progress_table tbody tr"));
+            const contentsList = Array.from(document.querySelectorAll(".user_progress_table tbody tr"));
             const contentObjList = [];
             let span = 0;
             let index = -1;
@@ -121,7 +131,7 @@ const getCrawlData = async (userid, userpassword) => {
             await page.goto(searchData[a].link);
             await page.waitForSelector(".total_sections", { timeout: 5000 });
             const vodIdList = await page.evaluate(() => {
-                const contentsList = Array.from(page.querySelectorAll(".total_sections .modtype_vod .activityinstance a"));
+                const contentsList = Array.from(document.querySelectorAll(".total_sections .modtype_vod .activityinstance a"));
                 return contentsList.map(item => item.href.split("id=")[1]);
             });
             
@@ -143,16 +153,23 @@ const getCrawlData = async (userid, userpassword) => {
     return searchDataWithAttend;
 };
 
-const getHomworkData = async (userid, userpassword) => {
-    if(broswers[userid] === undefined || broswers[userid] === null) {
+const getHomworkData = async (key) => {
+    if(key === undefined || key === null)
+        return [];
+
+    if(sessionKey[key] === undefined || sessionKey[key] === null)
+        return [];
+
+    const { userid, userpassword } = sessionKey[key];
+    if(broswers[key] === undefined || broswers[key] === null) {
         const result = await login(userid, userpassword);
         if(!result)
             return [];
     }
-    broswers[userid];
-    const page = pages[userid][0];
+    const page = pages[key][1];
+    
 
-    if(templates[userid] === undefined || templates[userid] === null) {
+    if(templates[key] === undefined || templates[key] === null) {
         await page.goto("http://learn.hansung.ac.kr/");
         const wait = await page.waitForSelector("div.course_lists", { timeout: 5000 })
             .then(() => true)
@@ -161,8 +178,8 @@ const getHomworkData = async (userid, userpassword) => {
         if(!wait)
             return [];
 
-        templates[userid] = await page.evaluate(() => {
-            const contentsList = Array.from(page.querySelectorAll("li.course_label_re_02"));
+        templates[key] = await page.evaluate(() => {
+            const contentsList = Array.from(document.querySelectorAll("li.course_label_re_02"));
             const contentObjList = contentsList.map(item => {
                 const titleText = item.querySelector("h3").innerText;
                 const link = item.querySelector(".course_link");
@@ -178,7 +195,8 @@ const getHomworkData = async (userid, userpassword) => {
         });
     }
 
-    const searchData = [...templates[userid]];
+    const template = templates[key];
+    const searchData = [...template];
 
     const searchDataWithHomework = [];
     for(let a = 0; a < searchData.length; a ++) {
@@ -190,7 +208,7 @@ const getHomworkData = async (userid, userpassword) => {
             await page.waitForSelector("#region-main", { timeout: 5000 });
 
             homeworkList = await page.evaluate(() => {
-                const contentsList = Array.from(page.querySelectorAll(".generaltable tbody tr"));
+                const contentsList = Array.from(document.querySelectorAll(".generaltable tbody tr"));
                 const contentsObjList = [];
 
                 let offset = 0;
@@ -223,16 +241,23 @@ const getHomworkData = async (userid, userpassword) => {
     return searchDataWithHomework;
 };
 
-const getNoticeData = async (userid, userpassword) => {
-    if(broswers[userid] === undefined || broswers[userid] === null) {
+const getNoticeData = async (key) => {
+    if(key === undefined || key === null)
+        return [];
+
+    if(sessionKey[key] === undefined || sessionKey[key] === null)
+        return [];
+
+    const { userid, userpassword } = sessionKey[key];
+    if(broswers[key] === undefined || broswers[key] === null) {
         const result = await login(userid, userpassword);
         if(!result)
             return [];
     }
-    broswers[userid];
-    const page = pages[userid][0];
+    const page = pages[key][2];
+    
 
-    if(templates[userid] === undefined || templates[userid] === null) {
+    if(templates[key] === undefined || templates[key] === null) {
         await page.goto("http://learn.hansung.ac.kr/");
         const wait = await page.waitForSelector("div.course_lists", { timeout: 5000 })
             .then(() => true)
@@ -241,8 +266,8 @@ const getNoticeData = async (userid, userpassword) => {
         if(!wait)
             return [];
 
-        templates[userid] = await page.evaluate(() => {
-            const contentsList = Array.from(page.querySelectorAll("li.course_label_re_02"));
+        templates[key] = await page.evaluate(() => {
+            const contentsList = Array.from(document.querySelectorAll("li.course_label_re_02"));
             const contentObjList = contentsList.map(item => {
                 const titleText = item.querySelector("h3").innerText;
                 const link = item.querySelector(".course_link");
@@ -258,7 +283,8 @@ const getNoticeData = async (userid, userpassword) => {
         });
     }
 
-    const searchData = [...templates[userid]];
+    const template = templates[key];
+    const searchData = [...template];
 
     for(let a = 0; a < searchData.length; a ++) {
         await page.goto(searchData[a].link);
@@ -333,19 +359,27 @@ const login = async (userid, userpassword) => {
             return document.querySelector(".usermenu .user_department").innerText;
         });
 
-        broswers[userid] = browser;
-        pages[userid] = [null, null, null];
-        pages[userid][0] = page;
-        pages[userid][1] = await browser.newPage();
-        await pages[userid][1].goto("http://learn.hansung.ac.kr/");
-        pages[userid][2] = await browser.newPage();
-        await pages[userid][2].goto("http://learn.hansung.ac.kr/");
+        sessionKey[name] = { userid, userpassword };
+
+        broswers[name] = browser;
+        pages[name] = [null, null, null];
+        pages[name][0] = page;
+        pages[name][1] = await browser.newPage();
+        await pages[name][1].goto("http://learn.hansung.ac.kr/");
+        pages[name][2] = await browser.newPage();
+        await pages[name][2].goto("http://learn.hansung.ac.kr/");
 
         return name;
     }
     
     return null;
-}
+};
+
+const logout = (sessionKey) => {
+    sessionKey[sessionKey] = null;
+    broswers[sessionKey] = null;
+    pages[sessionKey] = null;
+};
 
 app.post("/api/login", (req, res) => {
     const { uid, upw } = req.body;
@@ -354,23 +388,30 @@ app.post("/api/login", (req, res) => {
         .catch(console.error);
 });
 
+app.post("/api/logout", (req, res) => {
+    const { key } = req.body;
+    logout(key);
+    res.send(key);
+});
+
 app.post("/api/crawl", (req, res) => {
-    const { uid, upw } = req.body;
-    getCrawlData(uid, upw)
+    const { key } = req.body;
+    getCrawlData(key)
         .then(result => res.json(result))
         .catch(console.error);
 });
 
 app.post("/api/crawl/homework", (req, res) => {
-    const { uid, upw } = req.body;
-    getHomworkData(uid, upw)
+    const { key } = req.body;
+    console.log(key);
+    getHomworkData(key)
         .then(result => res.json(result))
         .catch(console.error);
 });
 
 app.post("/api/crawl/notice", (req, res) => {
-    const { uid, upw } = req.body;
-    getNoticeData(uid, upw)
+    const { key } = req.body;
+    getNoticeData(key)
         .then(result => res.json(result))
         .catch(console.error);
 });

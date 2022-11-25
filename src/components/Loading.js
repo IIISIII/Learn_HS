@@ -1,4 +1,4 @@
-import { Loader, Oval } from "react-loader-spinner"
+import { Oval } from "react-loader-spinner"
 const Loading = () => {
     return (
         <div style={{position:"absolute", backgroundColor:"rgba(248,249,250,0.5)",zIndex:"10",width:"100%",height:"100%"  }}>

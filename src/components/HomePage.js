@@ -1,24 +1,22 @@
-import { useState } from "react";
-import TabMenu from "../TabMenu";
-import 'react-calendar/dist/Calendar.css';
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from '@fullcalendar/daygrid';
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 
-import '@fullcalendar/common/main.css';
-import Calendar from '@toast-ui/calendar';
-import '@toast-ui/calendar/dist/toastui-calendar.min.css';
-import AssignCal from "./AssignCalendar";
+const HomePage = ({ sessionKey }) => {
+    const navigate = useNavigate();
 
-const HomePage = ()=> {
-    const [value, onChange] = useState(new Date());
-    const selectedView = 'month';  
-    
+    useEffect(() => {
+        if(sessionKey === undefined || sessionKey === null)
+            sessionKey = sessionStorage.getItem("sessionKey");
+
+        if(sessionKey === null)
+            navigate("/");
+    }, []);
+
     return (
-        <>
-            <h1>/홈페이지
-            </h1>
-        </>
-       
+        <div className="contentBody">
+            <h1>홈페이지</h1>
+        </div>
     );
-}
+};
+
 export default HomePage;
