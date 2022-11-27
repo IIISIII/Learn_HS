@@ -10,14 +10,17 @@ function LoginForm({id,setId,password,setPassword}) {
         className="mb-3"
         style={{ width: "100%", fontSize:"15px", fontFamily:"Rubik", color:"#999999" }}
       >
-        <Form.Control type="email" style={{ width: "100%" }} placeholder="name@example.com"  name="uid" onChange={ e => setId(e.target.value)}/>
+        <Form.Control type="email" style={{ width: "100%",color:"#555555" }} 
+        placeholder="name@example.com"  name="uid" onChange={ e => setId(e.target.value)}/>
       </FloatingLabel>
       <FloatingLabel
         controlId="floatingPassword"
         label="Password"
         style={{fontSize:"15px", fontFamily:"Rubik", color:"#999999"}}
       >
-        <Form.Control type="password" placeholder="Password"  name="upw" onChange={ e => { setPassword(e.target.value) }}/>
+        <Form.Control type="password" placeholder="Password" 
+        style={{color:"#555555"}}
+         name="upw" onChange={ e => { setPassword(e.target.value) }}/>
       </FloatingLabel>
     </>
   );
