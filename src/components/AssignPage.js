@@ -68,6 +68,7 @@ const AssignPage = ({ sessionKey }) => {
             if(savedData !== null)
                 setDataArr(JSON.parse(savedData));
         }
+        console.log(dataArr);
     }, [dataArr]);
 
     const load_table = ({ data }) => {
@@ -106,10 +107,10 @@ const AssignPage = ({ sessionKey }) => {
 
     return (
         <div className="contentBody">
-            { !dataArr && <Loading style={ { textAlign:"center" } }/> }
-            <div style={{ marginLeft:"10%", marginRight:"10%" }}>
+            { !dataArr ? <Loading style={ { textAlign:"center" } }/> : getCalendar(converToEvents(dataArr)) }
+            {/* <div style={{ marginLeft:"10%", marginRight:"10%" }}>
                 <AssignCal/>
-            </div>
+            </div> */}
         </div>
     );
 }

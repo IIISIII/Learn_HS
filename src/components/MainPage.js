@@ -76,8 +76,6 @@ const MainPage = ({ sessionKey }) => {
                 setLoading(false);
             });
     };
-
-
     
     useEffect(() => {
         if(sessionKey === undefined || sessionKey === null)
@@ -111,80 +109,70 @@ const MainPage = ({ sessionKey }) => {
         }
     }, [dataArr]);
 
-    const subject2= (data)=>
-    data.map((n,i)=>{
-        return(
-        <th>
-    <Button 
-        key={i} 
-        id={ i + "-title" } 
-        onClick={ () => 
-            setSelectedNum(i) } 
-        variant="contained">{n.title}
-    </Button></th>)})
-        //const result =({ data }) => data.map((i, n) => <p key={ n } id={ n + "-title" } onClick={ () => click(n) }>{ i.title }</p>);
-     
-    
+    const subject2 = (data, selectedNum) =>
+        data.map((n, i) => {
+            return (
+                <th>
+                    {
+                        i !== selectedNum ?
+                            <Button key = {i} id = { i + "-title" } onClick={ () => setSelectedNum(i) } variant="contained">
+                                { n.title }
+                            </Button> :
+                            <div>
+                                {n.title}
+                            </div> 
+                    }
+                </th>
+            )
+        });
 
     const load_checktable = (data, num) => {
         return [[], ...data[num].attendList].reduce((acc, cur, i) => {
             const list = cur.map((itemlist) => {
                 const progress = {}; 
-                progress.jucha = i-1;
+                progress.jucha = i;
                 progress.realmax = itemlist.maxTime;
-                progress.realcur=itemlist.currentTime>=itemlist.maxTime? itemlist.maxTime:itemlist.currentTime;
+                progress.realcur = itemlist.currentTime >= itemlist.maxTime ? itemlist.maxTime : itemlist.currentTime;
                 return progress;
             });
             return acc.concat(list);
         });
     };
     
-    const print_checktable=(arr)=>{
-        const tests = new Array();
-        var count=0;
-        var realmaxcount=0;
-        var realcurcount=0;
-     
-        var what=arr[0].jucha;
-        //if(arr[0].jucha==1) console.log("adsf");
-       for(let i=0;i<arr.length;i++){
-            if((arr[i].jucha-what)==2)
-                what++;
-        
-            realmaxcount+=arr[i].realmax;
-            realcurcount+=arr[i].realcur;
-        
-            console.log(arr[i].jucha +"jucha");
-            console.log(what +  "what");
-       if(arr[i].jucha!=what){
-            realmaxcount-=arr[i].realmax;
-            realcurcount-=arr[i].realcur;
-            var good={}
-                good.percent=(realcurcount/realmaxcount)*100;
-                good.wek=arr[i-1].jucha+1;
-            tests.push(good);
-            console.log("iinput");
-            what+=1;
-            realmaxcount=arr[i].realmax;
-            realcurcount=arr[i].realcur;
-         }
-       }
-       return (tests.map((test)=>
-       (
-      
-        <td   align="center" style={{ border : "1px solid rea",width: 100, height: 100, padding:"10px",Align:"center" }}>{test.wek+"주차"} 
-           <div  style={{ width: 100, height: 100, padding:"25px" }}>
-                <CircularProgressbar value={(test.percent).toFixed(0)} text={(test.percent).toFixed(0)}  
-                 styles={buildStyles({
-                textColor: "#2A3990",
-                pathColor: "#2A3990",
-                trailColor: "#D23369",
-                textSize: "28px"
-              })}/>
-            </div>
-        </td>
-       )
-       ))
+    const print_checktable = (arr) => {
+        let index = -1;
+        let flag = -1;
+        const checkArr = [];
+        for(let a = 0; a < arr.length; a ++) {
+            if(arr[a].jucha != flag) {
+                index ++;
+                flag = arr[a].jucha;
+                checkArr[index] = { week: flag, curSum: 0, maxSum: 0 };
+            }
+            checkArr[index].curSum += arr[a].realcur;
+            checkArr[index].maxSum += arr[a].realmax;
+        }
+
+        return checkArr.map(item => {
+            const percent = item.curSum / item.maxSum * 100;
+            return (
+                <td align= "center" style={{ border: "1px solid rea", width: "auto", height: "auto", padding: "10px", Align: "center" }}>
+                    { item.week + "주차" } 
+                    <div style={{ width: "auto", height: "auto", padding: "25px" }}>
+                        <CircularProgressbar value={(percent).toFixed(0)} text={(percent).toFixed(0)}  
+                            styles={buildStyles({
+                                textColor: "#2A3990",
+                                pathColor: "#2A3990",
+                                trailColor: "#D23369",
+                                textSize: "28px"
+                            })}
+                        />
+                    </div>
+                </td>
+            );
+        });
+
+
     }
     
 
@@ -204,7 +192,6 @@ const MainPage = ({ sessionKey }) => {
     };
         
     const print_table =(arr)=>{
-
         return (arr.map((info)=>     
         (
             <tbody>
@@ -212,18 +199,14 @@ const MainPage = ({ sessionKey }) => {
                     <th align="center" style={{verticalAlign:"middle"}} >
                         {info.weekends+1+"주차"}
                     </th>
-        
                     <th align="center" style={{ verticalAlign:"middle", padding:"50px",Align:"center" }}>
                      {(info.cur/info.max*100).toFixed(0)>100 ? "100": (info.cur/info.max*100).toFixed(0)}% {info.cur>info.max ? "출석완료":"결석"} 
                     </th>
                     <th align="center" style={{ width: 150,padding:"20px",Align:"center" }}>
-                    
-                    <div  style={{   padding:"20px" }}>
-                <CircularProgressbar value={(info.cur/info.max*100).toFixed(0)} text={(info.cur/info.max*100).toFixed(0)>=100 ? "100" : (info.cur/info.max*100).toFixed(0)}/>
+                        <div  style={{   padding:"20px" }}>
+                            <CircularProgressbar value={(info.cur/info.max*100).toFixed(0)} text={(info.cur/info.max*100).toFixed(0)>=100 ? "100" : (info.cur/info.max*100).toFixed(0)}/>
                         </div>
-    
-                      
-                        </th>
+                    </th>
                     <th align="center"style={{ verticalAlign:"middle", padding:"20px",Align:"center" }} >
                         <a href={info.url}>{info.head}</a>
                     </th>
@@ -232,28 +215,26 @@ const MainPage = ({ sessionKey }) => {
         )))
     }
        
-    
-   
     return (
         <div className="contentBody">
             {
                 !dataArr ? <Loading/> : 
-                <div className="autoMargin" style={ { width: "100%" } }>
-                    <table style={{ marginLeft:"auto", marginRight:"auto",textAlign: "center", margin:"20px",  width:"85%"}}>
+                <div className="autoMargin" style={ { width: "90%" } }>
+                    <table style={{ width:"100%", textAlign: "center" }}>
                         <thead>
                             <tr>
-                                { subject2(dataArr) }
+                                { subject2(dataArr, selectedNum) }
                             </tr>
                         </thead>
                     </table>
-                    <table style={{ marginLeft:"7%", marginRight:"7%", border: "1px solid #dddddd"}}>
-                    <thead>
-                        <tr>
-                            { print_checktable(load_checktable(dataArr, selectedNum)) }
-                        </tr>
-                    </thead>
+                    <table style={{ width: "100%", border: "1px solid #dddddd"}}>
+                        <thead>
+                            <tr>
+                                { print_checktable(load_checktable(dataArr, selectedNum)) }
+                            </tr>
+                        </thead>
                     </table>
-                    <Table style={{ width:"85%", fontSize:"15px", marginLeft:"8%", marginRight:"8%",textAlign: "center", margin:"20px", border: "1px solid #dddddd"}}>
+                    <Table style={{ width:"100%", fontSize:"15px", textAlign: "center", border: "1px solid #dddddd"}}>
                         <thead>
                             <tr>
                                 <th style={{width:"30", backgroundColor: "#eeeeee", textAlign: "center" }}>주차</th>

@@ -403,7 +403,6 @@ app.post("/api/crawl", (req, res) => {
 
 app.post("/api/crawl/homework", (req, res) => {
     const { key } = req.body;
-    console.log(key);
     getHomworkData(key)
         .then(result => res.json(result))
         .catch(console.error);

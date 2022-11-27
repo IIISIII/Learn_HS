@@ -21,7 +21,7 @@ const LoginPage = ({ onLoginSuccess = f => {} }) => {
                 .then(result => {
                     if(result.data !== null) {
                         onLoginSuccess(result.data);
-                        navigate("/home");
+                        navigate("/main");
                     }
                     else
                         setFail(true);
