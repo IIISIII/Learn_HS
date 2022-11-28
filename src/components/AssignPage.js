@@ -131,15 +131,14 @@ const AssignPage = ({ sessionKey }) => {
 
     return (
         <>
-        <div className="contentBody" style={{marginBottom:"40px",height:"100vh"}}>
-             { !loading && <Loading style={ { textAlign:"center" } }/> }
-            <h1 style={{marginLeft:"18%", marginBottom:"20px",fontFamily:"NanumSquareNeo-Variable"}}>과제</h1>
-            { dataArr &&
-            <div className="autoMargin" style={ { fontFamily:"NanumSquareNeo-Variable", fontSize:"13px" ,marginLeft:"20%",marginRight:"20%",width:"65%", marginBottom: "40px" } }>
-                { getCalendar(converToEvents(dataArr)) }
-            </div> }
-        </div >
-        
+            <div className="contentBody" style={{marginBottom:"40px",height:"100vh"}}>
+                { !dataArr && <Loading style={ { textAlign:"center" } }/> }
+                <h1 style={{marginLeft:"18%", marginBottom:"20px",fontFamily:"NanumSquareNeo-Variable"}}>과제</h1>
+                { dataArr &&
+                <div className="autoMargin" style={ { fontFamily:"NanumSquareNeo-Variable", fontSize:"13px" ,marginLeft:"20%",marginRight:"20%",width:"65%", marginBottom: "40px" } }>
+                    { getCalendar(converToEvents(dataArr)) }
+                </div> }
+            </div >
         </>
     );
 }
