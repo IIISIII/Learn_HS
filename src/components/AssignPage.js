@@ -4,8 +4,10 @@ import { getHomworkData } from "./Crawl";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from '@fullcalendar/daygrid';
 import Loading from "./Loading";
-import AssignCal from "./AssignCalendar";
 import '@fullcalendar/common/main.css';
+import { Tooltip } from "bootstrap";
+
+let toolTipInstance = null;
 
 const AssignPage = ({ sessionKey }) => {
     const [respond, setRespond] = useState();
@@ -68,7 +70,6 @@ const AssignPage = ({ sessionKey }) => {
             if(savedData !== null)
                 setDataArr(JSON.parse(savedData));
         }
-        console.log(dataArr);
     }, [dataArr]);
 
     const load_table = ({ data }) => {
@@ -82,7 +83,28 @@ const AssignPage = ({ sessionKey }) => {
         return array.sort(function(a,b){return new Date(b.deadline) - new Date(a.deadline)});
     };
 
-    const converToEvents = (arr) => arr.map(hwork => ({ title: hwork.name, date: hwork.deadline.split(" ")[0], url: hwork.url, color: hwork.report ? "#00FF00" : "#FF0000" }));
+    const converToEvents = (arr) => arr.map(hwork => ({ title: hwork.title, date: hwork.deadline.split(" ")[0], url: hwork.url, color: hwork.report ? "#00FF00" : "#FF0000", extendedProps: { description: hwork.name } }));
+
+    const handleMouseEnter = (info) => {
+        if(info.event.extendedProps.description) {
+            toolTipInstance = new Tooltip(info.el, {
+                title: info.event.extendedProps.description,
+                html: true,
+                placement: "top",
+                trigger: "hover",
+                container: "body"
+            });
+
+            toolTipInstance.show();
+        }
+    };
+
+    const handleMouseLeave = (info) => {
+        if(toolTipInstance) {
+            toolTipInstance.dispose();
+            toolTipInstance = null;
+        }
+    };
 
     const getCalendar = (events) => {
         return (
@@ -94,9 +116,8 @@ const AssignPage = ({ sessionKey }) => {
                                 defaultView="dayGridMonth"
                                 plugins={[ dayGridPlugin ]}
                                 events={ events }
-                                eventClick={ (arg) => {
-                                    console.log(arg.event);
-                                } }
+                                eventMouseEnter={ handleMouseEnter }
+                                eventMouseLeave={ handleMouseLeave }
                             />
                         </div>
                     </div>
@@ -108,10 +129,8 @@ const AssignPage = ({ sessionKey }) => {
     return (
         <div className="contentBody">
             { !dataArr ? <Loading style={ { textAlign:"center" } }/> : getCalendar(converToEvents(dataArr)) }
-            {/* <div style={{ marginLeft:"10%", marginRight:"10%" }}>
-                <AssignCal/>
-            </div> */}
         </div>
     );
 }
+
 export default AssignPage;

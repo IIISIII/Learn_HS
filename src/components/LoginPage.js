@@ -19,7 +19,8 @@ const LoginPage = ({ onLoginSuccess = f => {} }) => {
             setLoading(true);
             loginPromise({ uid: id, upw: password })
                 .then(result => {
-                    if(result.data !== null) {
+                    console.log(result);
+                    if(result.data !== "") {
                         onLoginSuccess(result.data);
                         navigate("/main");
                     }

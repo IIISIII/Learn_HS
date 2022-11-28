@@ -384,7 +384,7 @@ const logout = (sessionKey) => {
 app.post("/api/login", (req, res) => {
     const { uid, upw } = req.body;
     login(uid, upw)
-        .then(result => res.send(result))
+        .then(result =>res.send(result))
         .catch(console.error);
 });
 
