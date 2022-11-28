@@ -13,6 +13,8 @@
   }
 }
 
+
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -73,6 +75,21 @@
   font-weight: normal;
   font-style: normal;
 }
+.fc-col-header-cell-cushion {
+	color: #001253;
+  text-decoration: none;
+  }
+  .fc-col-header-cell-cushion:hover {
+	text-decoration: none;
+	color:#001253;
+  }
+
+  .fc-daygrid-day-number{
+    color: #001253;
+    font-size:1em;
+    text-decoration: none;
+    font-family: Andada_Pro;
+    }
 
 .contentBody {
   height: 100%;
