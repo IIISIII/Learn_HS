@@ -55,7 +55,7 @@ const LoginPage = ({ onLoginSuccess = f => {} }) => {
                         </Button>
                         <br/>
                     </div>
-                    { loginFail && <p style={{fontFamily:"SUIT-Regular",marginLeft:"31px", marginTop:"20px",fontSize:"13px",color:"#FF003E"}}> 로그인에 실패하였습니다.<br/>학생 ID와 비밀번호를 확인해주세요.</p> }
+                    { loginFail && <p style={{fontFamily:"SUIT-Regular",marginLeft:"24px", marginTop:"20px",fontSize:"13px",color:"#FF003E"}}> 로그인에 실패하였습니다.<br/>학생 ID와 비밀번호를 확인해주세요.</p> }
                 </Card>
             </div>
         </div>

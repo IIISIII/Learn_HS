@@ -83,7 +83,7 @@ const AssignPage = ({ sessionKey }) => {
         return array.sort(function(a,b){return new Date(b.deadline) - new Date(a.deadline)});
     };
 
-    const converToEvents = (arr) => arr.map(hwork => ({ title: hwork.title, date: hwork.deadline.split(" ")[0], url: `javascript:window.open('${hwork.url}', '${hwork.name}', 'top=10, left=10');`, color: hwork.report ? "#318F24" : "#BE2E22", extendedProps: { description: hwork.name } }));
+    const converToEvents = (arr) => arr.map(hwork => ({ title: hwork.title, date: hwork.deadline.split(" ")[0], url: `javascript:window.open('${hwork.url}', '${hwork.name}', 'top=10, left=10');`, color: hwork.report ? "#367E18" : "#CC3636", extendedProps: { description: hwork.name } }));
 
     const handleMouseEnter = (info) => {
         const hname = info.event.extendedProps.description;
@@ -114,9 +114,11 @@ const AssignPage = ({ sessionKey }) => {
                     <div className='body-info-container'> 
                         <div className='calendar-wrapper'>
                             <FullCalendar
+                                 weekends={true}
                                 defaultView="dayGridMonth"
                                 plugins={[ dayGridPlugin ]}
                                 events={ events }
+                                height={'80vh'}
                                 eventMouseEnter={ handleMouseEnter }
                                 eventMouseLeave={ handleMouseLeave }
                             />
@@ -131,7 +133,7 @@ const AssignPage = ({ sessionKey }) => {
         <div className="contentBody">
             { !dataArr ?
             <Loading style={ { textAlign:"center" } }/> :
-            <div className="autoMargin" style={ { width: "80%", marginBottom: "40px" } }>
+            <div className="autoMargin" style={ { fontFamily:"NanumSquareNeo-Variable", fontSize:"13px" ,marginLeft:"20%",marginRight:"20%",width:"65%", marginBottom: "40px" } }>
                 { getCalendar(converToEvents(dataArr)) }
             </div> }
         </div>
