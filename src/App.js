@@ -1,7 +1,5 @@
 import { Route, Routes, useLocation } from 'react-router-dom';
 import './App.css';
-import 'react-calendar/dist/Calendar.css';
-import '@toast-ui/calendar/dist/toastui-calendar.min.css';
 import LoginPage from './components/LoginPage';
 import MainPage from './components/MainPage';
 import NoticePage from './components/NoticePage';

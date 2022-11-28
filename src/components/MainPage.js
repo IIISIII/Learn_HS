@@ -8,7 +8,6 @@ import { MDBTable,MDBBtn, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
 import Card from 'react-bootstrap/Card';
 import styled from "styled-components";
 import { CircularProgressbar , buildStyles} from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
 import Table from 'react-bootstrap/Table';
 
 const MainPage = ({ sessionKey }) => {
@@ -207,7 +206,7 @@ const MainPage = ({ sessionKey }) => {
         });
     };
         
-    const print_table =(arr)=>{
+    const print_table =(arr) => (
         <MDBTableBody style={{height:"10px"}}>
         {
             arr.map((info)=> {
@@ -238,60 +237,62 @@ const MainPage = ({ sessionKey }) => {
                             </div>
                         </td>
                         <td style={{ border:"1px solid #eeeeee",textAlign:"left",paddingLeft:"15px",paddingTop:"25px", verticalAlign:"center" }} >
-                            <MDBBtn style={{textDecorate:"none"}} noRipple="true" color='link' rounded size='sm' href={`javascript:window.open('${info.url}', '${info.head}', 'top=10, left=10');`} target='_blank'>{info.head}</MDBBtn>
+                            <MDBBtn style={{textDecorate:"none", width: "100%", textAlign: "left"}} noRipple="true" color='link' rounded size='sm' href={`javascript:window.open('${info.url}', '${info.head}', 'top=10, left=10');`}>{info.head}</MDBBtn>
                         </td>
                     </tr>
                 );
             })
         }
         </MDBTableBody>
-    }
+    );
        
     return (
-        <div className="contentBody" style={{marginLeft:"13%", marginRight:"13%"}}>
+        <div className="contentBody">
             {
                 !dataArr ? <Loading/> : 
                 <div className="autoMargin" style={ { width: "100%", marginBottom: "40px" } }>
-                    <h1 style={{marginLeft:"2%",fontFamily:"NanumSquareNeo-Variable"}}>
-                        강좌
-                    </h1>
-                    
-                    <table style={{ marginTop:"10px",marginBottom:"20px",width:"100%", textAlign: "center" }}>
-                        <tbody>
-                            <tr>
-                                { subject2(dataArr, selectedNum) }
-                            </tr>
-                        </tbody>
-                    </table>
-                    <Card style={{padding:"40px"}}>
-                    { title && <h1 style={{marginBottom:"15px",fontSize:"31px",fontFamily:"NanumSquareNeo-Variable",fontWeight:"lighter"}}>{title}</h1> }
-                    <h style={{fontWeight:"bold",marginLeft:"5px",marginTop:"10px",marginBottom:"5px",fontFamily:"GowunBatang-Regular"}}>
-                        수업 진행률
-                    </h>
-                    <Card style={{fontFamily:"NanumSquareNeo-Variable",height:"120px",marginBottom:"20px"}}>
-                        <Table style={{marginTop:"7px",border:"white none", width: "100%"}}>
+                    <div style={ { marginLeft: "13%", marginRight: "13%" } }>
+                        <h1 style={{marginLeft:"2%",fontFamily:"NanumSquareNeo-Variable"}}>
+                            강좌
+                        </h1>
+                        
+                        <table style={{ marginTop:"10px",marginBottom:"20px",width:"100%", textAlign: "center" }}>
                             <tbody>
                                 <tr>
-                                    { print_checktable(load_checktable(dataArr, selectedNum)) }
+                                    { subject2(dataArr, selectedNum) }
                                 </tr>
                             </tbody>
-                        </Table>
-                        </Card>
-                        <h style={{fontWeight:"bold",marginLeft:"5px",marginTop:"20px",marginBottom:"5px",fontFamily:"GowunBatang-Regular",fontSize:"16px"}}>
-                            주차별 학습
+                        </table>
+                        <Card style={{padding:"40px"}}>
+                        { title && <h1 style={{marginBottom:"15px",fontSize:"31px",fontFamily:"NanumSquareNeo-Variable",fontWeight:"lighter"}}>{title}</h1> }
+                        <h style={{fontWeight:"bold",marginLeft:"5px",marginTop:"10px",marginBottom:"5px",fontFamily:"GowunBatang-Regular"}}>
+                            수업 진행률
                         </h>
-                        <MDBTable style={{fontFamily: "SUIT-Regular",height:"100px",width:"100%", fontSize:"15px", textAlign: "center", border: "1px solid #dddddd",borderRadius:"10px"}}>
-                            <MDBTableHead>
-                                <tr>
-                                    <th style={{textAlign:"left",paddingLeft:"13px",border:"1px solid #dddddd", background:"#eeeeee" }}>학습 주차</th>
-                                    <th style={{textAlign:"left",paddingLeft:"13px",border:"1px solid #dddddd", background:"#eeeeee" }}>출석여부</th>
-                                    <th style={{textAlign:"left",paddingLeft:"13px",border:"1px solid #dddddd", background:"#eeeeee" }}>진행률</th>
-                                    <th style={{textAlign:"left",paddingLeft:"25px",border:"1px solid #dddddd", background:"#eeeeee" }}>동영상 제목</th>
-                                </tr> 
-                            </MDBTableHead>
-                            { print_table(load_table(dataArr, selectedNum)) }
-                        </MDBTable>
-                    </Card>
+                        <Card style={{fontFamily:"NanumSquareNeo-Variable",height:"120px",marginBottom:"20px"}}>
+                            <Table style={{marginTop:"7px",border:"white none", width: "100%"}}>
+                                <tbody>
+                                    <tr>
+                                        { print_checktable(load_checktable(dataArr, selectedNum)) }
+                                    </tr>
+                                </tbody>
+                            </Table>
+                            </Card>
+                            <h style={{fontWeight:"bold",marginLeft:"5px",marginTop:"20px",marginBottom:"5px",fontFamily:"GowunBatang-Regular",fontSize:"16px"}}>
+                                주차별 학습
+                            </h>
+                            <MDBTable style={{fontFamily: "SUIT-Regular",height:"100px",width:"100%", fontSize:"15px", textAlign: "center", border: "1px solid #dddddd",borderRadius:"10px"}}>
+                                <MDBTableHead>
+                                    <tr>
+                                        <th style={{textAlign:"left",paddingLeft:"13px",border:"1px solid #dddddd", background:"#eeeeee" }}>학습 주차</th>
+                                        <th style={{textAlign:"left",paddingLeft:"13px",border:"1px solid #dddddd", background:"#eeeeee" }}>출석여부</th>
+                                        <th style={{textAlign:"left",paddingLeft:"13px",border:"1px solid #dddddd", background:"#eeeeee" }}>진행률</th>
+                                        <th style={{textAlign:"left",paddingLeft:"25px",border:"1px solid #dddddd", background:"#eeeeee" }}>동영상 제목</th>
+                                    </tr> 
+                                </MDBTableHead>
+                                { print_table(load_table(dataArr, selectedNum)) }
+                            </MDBTable>
+                        </Card>
+                    </div>
                 </div>
             }
         </div>

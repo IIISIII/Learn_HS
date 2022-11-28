@@ -100,7 +100,7 @@ const NoticePage = ({ sessionKey }) => {
                                     { noti.title }
                                 </th>
                                 <th style={ { fontFamily: "SUIT-Regular", fontWeight: "500" } }>
-                                    <a style={ { textDecorationLine: "none" } } href={ noti.url }>{ noti.head }</a>
+                                    <a style={ { textDecorationLine: "none" } } href={ `javascript:window.open('${noti.url}', '${noti.title}', 'top=10, left=10');` }>{ noti.head }</a>
                                 </th>
                                 <th style={ { fontFamily: "Andada_Pro", fontSize: "14px", fontWeight: "lighter" } }>
                                     { noti.date }

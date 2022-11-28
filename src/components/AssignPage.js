@@ -4,7 +4,6 @@ import { getHomworkData } from "./Crawl";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from '@fullcalendar/daygrid';
 import Loading from "./Loading";
-import '@fullcalendar/common/main.css';
 import { Tooltip } from "bootstrap";
 
 let toolTipInstance = null;
@@ -133,9 +132,13 @@ const AssignPage = ({ sessionKey }) => {
         <div className="contentBody">
             { !dataArr ?
             <Loading style={ { textAlign:"center" } }/> :
-            <div className="autoMargin" style={ { fontFamily:"NanumSquareNeo-Variable", fontSize:"13px" ,marginLeft:"20%",marginRight:"20%",width:"65%", marginBottom: "40px" } }>
-                { getCalendar(converToEvents(dataArr)) }
-            </div> }
+            <>
+                <h1 style={{marginLeft:"18%", marginBottom:"20px",fontFamily:"NanumSquareNeo-Variable"}}>과제</h1>
+                <div className="autoMargin" style={ { fontFamily:"NanumSquareNeo-Variable", fontSize:"13px", marginLeft:"20%", marginRight:"20%", width:"60%", marginBottom: "40px" } }>
+                    { getCalendar(converToEvents(dataArr)) }
+                </div>
+            </>
+             }
         </div>
     );
 }
