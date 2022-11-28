@@ -131,7 +131,7 @@ const AssignPage = ({ sessionKey }) => {
         <div className="contentBody">
             { !dataArr ?
             <Loading style={ { textAlign:"center" } }/> :
-            <div className="autoMargin" style={ { width: "80%" } }>
+            <div className="autoMargin" style={ { width: "80%", marginBottom: "40px" } }>
                 { getCalendar(converToEvents(dataArr)) }
             </div> }
         </div>
