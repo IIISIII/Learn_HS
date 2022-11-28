@@ -260,33 +260,33 @@ const MainPage = ({ sessionKey }) => {
                         </tbody>
                     </table>
                     <Card style={{padding:"40px"}}>
-                    { title && <h1 style={{marginBottom:"15px",fontSize:"31px",fontFamily:"NanumSquareNeo-Variable",fontWeight:"lighter"}}>{title}</h1> }
-                    <h style={{fontWeight:"bold",marginLeft:"5px",marginTop:"10px",marginBottom:"5px",fontFamily:"GowunBatang-Regular"}}>
-                        수업 진행률
-                    </h>
-                    <Card style={{fontFamily:"NanumSquareNeo-Variable",height:"120px",marginBottom:"20px"}}>
-                    <Table style={{marginTop:"7px",border:"white none", width: "100%"}}>
-                        <tbody>
-                            <tr>
-                                { print_checktable(load_checktable(dataArr, selectedNum)) }
-                            </tr>
-                        </tbody>
-                    </Table>
-                    </Card>
-                    <h style={{fontWeight:"bold",marginLeft:"5px",marginTop:"20px",marginBottom:"5px",fontFamily:"GowunBatang-Regular",fontSize:"16px"}}>
-                        주차별 학습
-                    </h>
-                    <MDBTable style={{fontFamily: "SUIT-Regular",height:"100px",width:"100%", fontSize:"15px", textAlign: "center", border: "1px solid #dddddd",borderRadius:"10px"}}>
-                        <MDBTableHead>
-                            <tr>
-                                <th style={{textAlign:"left",paddingLeft:"13px",border:"1px solid #dddddd", background:"#eeeeee" }}>학습 주차</th>
-                                <th style={{textAlign:"left",paddingLeft:"13px",border:"1px solid #dddddd", background:"#eeeeee" }}>출석여부</th>
-                                <th style={{textAlign:"left",paddingLeft:"13px",border:"1px solid #dddddd", background:"#eeeeee" }}>진행률</th>
-                                <th style={{textAlign:"left",paddingLeft:"25px",border:"1px solid #dddddd", background:"#eeeeee" }}>동영상 제목</th>
-                            </tr> 
-                        </MDBTableHead>
-                        { print_table(load_table(dataArr, selectedNum)) }
-                    </MDBTable>
+                        { title && <h1 style={{marginBottom:"15px",fontSize:"31px",fontFamily:"NanumSquareNeo-Variable",fontWeight:"lighter"}}>{title}</h1> }
+                        <h style={{fontWeight:"bold",marginLeft:"5px",marginTop:"10px",marginBottom:"5px",fontFamily:"GowunBatang-Regular"}}>
+                            수업 진행률
+                        </h>
+                        <Card style={{fontFamily:"NanumSquareNeo-Variable",height:"auto",marginBottom:"20px"}}>
+                            <Table style={{marginTop:"7px",border:"white none", width: "100%"}}>
+                                <tbody>
+                                    <tr>
+                                        { print_checktable(load_checktable(dataArr, selectedNum)) }
+                                    </tr>
+                                </tbody>
+                            </Table>
+                        </Card>
+                        <h style={{fontWeight:"bold",marginLeft:"5px",marginTop:"20px",marginBottom:"5px",fontFamily:"GowunBatang-Regular",fontSize:"16px"}}>
+                            주차별 학습
+                        </h>
+                        <MDBTable style={{fontFamily: "SUIT-Regular",height:"100px",width:"100%", fontSize:"15px", textAlign: "center", border: "1px solid #dddddd",borderRadius:"10px"}}>
+                            <MDBTableHead>
+                                <tr>
+                                    <th style={{textAlign:"left",paddingLeft:"13px",border:"1px solid #dddddd", background:"#eeeeee" }}>학습 주차</th>
+                                    <th style={{textAlign:"left",paddingLeft:"13px",border:"1px solid #dddddd", background:"#eeeeee" }}>출석여부</th>
+                                    <th style={{textAlign:"left",paddingLeft:"13px",border:"1px solid #dddddd", background:"#eeeeee" }}>진행률</th>
+                                    <th style={{textAlign:"left",paddingLeft:"25px",border:"1px solid #dddddd", background:"#eeeeee" }}>동영상 제목</th>
+                                </tr> 
+                            </MDBTableHead>
+                            { print_table(load_table(dataArr, selectedNum)) }
+                        </MDBTable>
                     </Card>
                 </div>
             }
