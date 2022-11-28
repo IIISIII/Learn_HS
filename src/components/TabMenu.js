@@ -27,11 +27,9 @@ function TabMenu({ sessionKey, onLogout })
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="/home">홈</Nav.Link>
             <Nav.Link href="/main">강좌</Nav.Link>
             <Nav.Link href="/notice">공지사항</Nav.Link>
             <Nav.Link href="/assign">과제</Nav.Link>
-            
           </Nav>
           {
             sessionKey &&

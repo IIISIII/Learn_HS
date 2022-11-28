@@ -87,26 +87,30 @@ const NoticePage = ({ sessionKey }) => {
 
     const print_table =(arr)=>{
         var count = arr.length;
-        return (arr.slice(offset, offset + 10).map((noti, key)=>  {   
-            return (
-                <tbody key={key}>
-                    <tr>
-                        <th style={ { padding: "10px" , fontFamily:"Andada_Pro",fontWeight:"lighter"} }>
-                            { count - ((page - 1) * 10) - key}
-                        </th>
-                        <th style={{fontFamily:"SUIT-Regular",fontWeight:"200",fontSize:"14px"}}>
-                            {noti.title}
-                        </th>
-                        <th style={{fontFamily:"SUIT-Regular",fontWeight:"500"}}>
-                            <a style={{textDecorationLine:"none"}} href={noti.url}>{noti.head}</a>
-                        </th>
-                        <th  style={{fontFamily:"Andada_Pro",fontSize:"14px",fontWeight:"lighter"}}>
-                            {noti.date}
-                        </th>
-                    </tr>
-                </tbody>
-            )
-        }));
+        return (
+            <tbody>
+                {
+                    arr.slice(offset, offset + 10).map((noti, key)=>  {   
+                        return (
+                            <tr key={ key }>
+                                <th style={ { padding: "10px", fontFamily: "Andada_Pro", fontWeight: "lighter"} }>
+                                    { count - ((page - 1) * 10) - key}
+                                </th>
+                                <th style={ { fontFamily: "SUIT-Regular", fontWeight: "200", fontSize: "14px" } }>
+                                    { noti.title }
+                                </th>
+                                <th style={ { fontFamily: "SUIT-Regular", fontWeight: "500" } }>
+                                    <a style={ { textDecorationLine: "none" } } href={ noti.url }>{ noti.head }</a>
+                                </th>
+                                <th style={ { fontFamily: "Andada_Pro", fontSize: "14px", fontWeight: "lighter" } }>
+                                    { noti.date }
+                                </th>
+                            </tr>
+                        )
+                    })
+                }
+            </tbody>
+        );
     };
          
 
