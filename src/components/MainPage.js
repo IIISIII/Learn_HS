@@ -247,7 +247,7 @@ const MainPage = ({ sessionKey }) => {
             {
                 !dataArr ? <Loading/> : 
                 
-                <div className="autoMargin" style={ { width: "100%" } }>
+                <div className="autoMargin" style={ { width: "100%", marginBottom: "40px" } }>
                     <h1 style={{marginLeft:"2%",fontFamily:"NanumSquareNeo-Variable"}}>
                         강좌
                     </h1>
