@@ -83,10 +83,11 @@ const AssignPage = ({ sessionKey }) => {
         return array.sort(function(a,b){return new Date(b.deadline) - new Date(a.deadline)});
     };
 
-    const converToEvents = (arr) => arr.map(hwork => ({ title: hwork.title, date: hwork.deadline.split(" ")[0], url: hwork.url, color: hwork.report ? "#00FF00" : "#FF0000", extendedProps: { description: hwork.name } }));
+    const converToEvents = (arr) => arr.map(hwork => ({ title: hwork.title, date: hwork.deadline.split(" ")[0], url: `javascript:window.open('${hwork.url}', '${hwork.name}', 'top=10, left=10');`, color: hwork.report ? "#318F24" : "#BE2E22", extendedProps: { description: hwork.name } }));
 
     const handleMouseEnter = (info) => {
-        if(info.event.extendedProps.description) {
+        const hname = info.event.extendedProps.description;
+        if(hname && toolTipInstance == null) {
             toolTipInstance = new Tooltip(info.el, {
                 title: info.event.extendedProps.description,
                 html: true,
@@ -128,7 +129,11 @@ const AssignPage = ({ sessionKey }) => {
 
     return (
         <div className="contentBody">
-            { !dataArr ? <Loading style={ { textAlign:"center" } }/> : getCalendar(converToEvents(dataArr)) }
+            { !dataArr ?
+            <Loading style={ { textAlign:"center" } }/> :
+            <div className="autoMargin" style={ { width: "80%" } }>
+                { getCalendar(converToEvents(dataArr)) }
+            </div> }
         </div>
     );
 }
