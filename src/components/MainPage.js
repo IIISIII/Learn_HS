@@ -2,11 +2,8 @@ import { useNavigate } from "react-router";
 import 'react-circular-progressbar/dist/styles.css';
 import Loading from "./Loading";
 import { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router";
 import { getCrawlData } from "./Crawl";
 import React from 'react';
-import TabMenu from "../TabMenu";
-import Button from '@material-ui/core/Button';
 import { MDBTable,MDBBtn, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
 import Card from 'react-bootstrap/Card';
 import styled from "styled-components";
@@ -120,7 +117,6 @@ const MainPage = ({ sessionKey }) => {
     const subject2 = (data, selectedNum) =>
         data.map((n, i) => {
             return (
-
                 <th>
                     {
                         i !== selectedNum ?
@@ -163,45 +159,38 @@ const MainPage = ({ sessionKey }) => {
         }
 
         return (
-            
             checkArr.map(item => {
-            const percent = item.curSum / item.maxSum * 100;
-            return (
-                <>
-               <td align= "center" style={{ border: "none",width: "auto", height: "auto", padding: "0px", fontSize:"13px" }}>
-                    <h style={{marginBottom:"2px"}}>{ item.week + "주차" } </h>
-                    <div style={{ padding:"10px" }}>
-                        {(percent).toFixed(0) == 100 ? 
-                        <CircularProgressbar value={(percent).toFixed(0)} text={(percent).toFixed(0)}
-                            styles={buildStyles({
-                                textColor: "#3E6D9C",
-                                pathColor: "#3E6D9C",
-                                trailColor: "#dddddd",
-                                textSize: "20px",
-                            })}
-                        />
-                        :
-                         <CircularProgressbar value={(percent).toFixed(0)} text={(percent).toFixed(0)}
-                            styles={buildStyles({
-                                textColor: "#FD841F",
-                                pathColor: "#FD841F",
-                                trailColor: "#dddddd",
-                                textSize: "20px",
-                            })}
-
-                        />
-            }
-                    </div>
-                </td>
-                </>
-            );
-        })
-   
+                const percent = item.curSum / item.maxSum * 100;
+                return (
+                <td align= "center" style={{ border: "none",width: "auto", height: "auto", padding: "0px", fontSize:"13px" }}>
+                        <h style={{marginBottom:"2px"}}>{ item.week + "주차" } </h>
+                        <div style={{ padding:"10px" }}>
+                            { 
+                                (percent).toFixed(0) == 100 ? 
+                                <CircularProgressbar value={(percent).toFixed(0)} text={(percent).toFixed(0)}
+                                    styles={buildStyles({
+                                        textColor: "#3E6D9C",
+                                        pathColor: "#3E6D9C",
+                                        trailColor: "#dddddd",
+                                        textSize: "20px",
+                                    })}
+                                />
+                                :
+                                <CircularProgressbar value={(percent).toFixed(0)} text={(percent).toFixed(0)}
+                                    styles={buildStyles({
+                                        textColor: "#FD841F",
+                                        pathColor: "#FD841F",
+                                        trailColor: "#dddddd",
+                                        textSize: "20px",
+                                    })}
+                                />
+                            }
+                        </div>
+                    </td>
+                );
+            })
         )
-
-
     }
-    
 
     const load_table = (data, num) => {
         return [[], ...data[num].attendList].reduce((acc, cur, i) => {
@@ -219,45 +208,49 @@ const MainPage = ({ sessionKey }) => {
     };
         
     const print_table =(arr)=>{
-        return (arr.map((info)=>     
-        (
-            <MDBTableBody style={{height:"10px"}}>
-                <tr style={{height:"10px"}} >
-                    <th align="center" style={{textAlign:"left",paddingLeft:"15px",border:"1px solid #eeeeee",width:"90px",height:"10px", fontWeight:"normal",verticalAlign:"middle"}} >
-                        {info.weekends+1+"주차"}
-                    </th>
-                    <th  style={{paddingLeft:"15px", border:"1px solid #eeeeee",textAlign:"left",width:"150px", verticalAlign:"middle", fontWeight:"normal" }}>
-                     {(info.cur/info.max*100).toFixed(0)>100 ? "100": (info.cur/info.max*100).toFixed(0)}% {info.cur>info.max ? "출석완료":"결석"} 
-                    </th>
-                    <th align="center" style={{ border:"1px solid #eeeeeee", width: "80px" }}>
-                        <div  style={{ height:"70px" }}>
-                            {(info.cur/info.max*100).toFixed(0)>=100 ? <CircularProgressbar 
-                            value={(info.cur/info.max*100).toFixed(0)} text={(info.cur/info.max*100).toFixed(0)>=100 ? "100" : (info.cur/info.max*100).toFixed(0)}/>
-                            :    <CircularProgressbar 
-                            value={(info.cur/info.max*100).toFixed(0)} text={(info.cur/info.max100).toFixed(0)>=100 ? "100" : (info.cur/info.max*100).toFixed(0)}
-                            styles={buildStyles({
-                                textColor: "#FD841F",
-                                pathColor: "#FD841F",
-                                trailColor: "#dddddd",
-                                textSize: "20px",
-                            })}/>
-                            }
-                            
-                        </div>
-                    </th>
-                    <th  style={{ border:"1px solid #eeeeee",textAlign:"left",paddingLeft:"15px",paddingTop:"25px", verticalAlign:"center" }} >
-                        <MDBBtn style={{textDecorate:"none"}}  color='link' rounded size='sm' href={info.url} target='_blank'>{info.head}</MDBBtn>
-                    </th>
-                </tr>
-            </MDBTableBody>
-        )))
+        <MDBTableBody style={{height:"10px"}}>
+        {
+            arr.map((info)=> {
+                const percent = (info.cur/info.max*100).toFixed(0);
+                return (
+                    <tr style={{height:"10px"}} >
+                        <td align="center" style={{textAlign:"left",paddingLeft:"15px",border:"1px solid #eeeeee",width:"90px",height:"10px", fontWeight:"normal",verticalAlign:"middle"}} >
+                            {info.weekends+1+"주차"}
+                        </td>
+                        <td  style={{paddingLeft:"15px", border:"1px solid #eeeeee",textAlign:"left",width:"150px", verticalAlign:"middle", fontWeight:"normal" }}>
+                            { percent > 100 ? "100": percent }% {info.cur>info.max ? "출석완료" : "결석" } 
+                        </td>
+                        <td align="center" style={{ border:"1px solid #eeeeeee", width: "80px" }}>
+                            <div  style={{ height:"70px" }}>
+                                { 
+                                    percent >= 100 ? 
+                                    <CircularProgressbar value={ percent } text={ percent >= 100 ? "100" : percent }/>
+                                    :
+                                    <CircularProgressbar value={percent} text={ percent >= 100 ? "100" : percent }
+                                        styles={buildStyles({
+                                            textColor: "#FD841F",
+                                            pathColor: "#FD841F",
+                                            trailColor: "#dddddd",
+                                            textSize: "20px",
+                                        })}
+                                    />
+                                }
+                            </div>
+                        </td>
+                        <td style={{ border:"1px solid #eeeeee",textAlign:"left",paddingLeft:"15px",paddingTop:"25px", verticalAlign:"center" }} >
+                            <MDBBtn style={{textDecorate:"none"}} noRipple="true" color='link' rounded size='sm' href={`javascript:window.open('${info.url}', '${info.head}', 'top=10, left=10');`} target='_blank'>{info.head}</MDBBtn>
+                        </td>
+                    </tr>
+                );
+            })
+        }
+        </MDBTableBody>
     }
        
     return (
         <div className="contentBody" style={{marginLeft:"13%", marginRight:"13%"}}>
             {
                 !dataArr ? <Loading/> : 
-                
                 <div className="autoMargin" style={ { width: "100%", marginBottom: "40px" } }>
                     <h1 style={{marginLeft:"2%",fontFamily:"NanumSquareNeo-Variable"}}>
                         강좌
@@ -276,28 +269,28 @@ const MainPage = ({ sessionKey }) => {
                         수업 진행률
                     </h>
                     <Card style={{fontFamily:"NanumSquareNeo-Variable",height:"120px",marginBottom:"20px"}}>
-                    <Table style={{marginTop:"7px",border:"white none", width: "100%"}}>
-                        <tbody>
-                            <tr>
-                                { print_checktable(load_checktable(dataArr, selectedNum)) }
-                            </tr>
-                        </tbody>
-                    </Table>
-                    </Card>
-                    <h style={{fontWeight:"bold",marginLeft:"5px",marginTop:"20px",marginBottom:"5px",fontFamily:"GowunBatang-Regular",fontSize:"16px"}}>
-                        주차별 학습
-                    </h>
-                    <MDBTable style={{fontFamily: "SUIT-Regular",height:"100px",width:"100%", fontSize:"15px", textAlign: "center", border: "1px solid #dddddd",borderRadius:"10px"}}>
-                        <MDBTableHead>
-                            <tr>
-                                <th style={{textAlign:"left",paddingLeft:"13px",border:"1px solid #dddddd", background:"#eeeeee" }}>학습 주차</th>
-                                <th style={{textAlign:"left",paddingLeft:"13px",border:"1px solid #dddddd", background:"#eeeeee" }}>출석여부</th>
-                                <th style={{textAlign:"left",paddingLeft:"13px",border:"1px solid #dddddd", background:"#eeeeee" }}>진행률</th>
-                                <th style={{textAlign:"left",paddingLeft:"25px",border:"1px solid #dddddd", background:"#eeeeee" }}>동영상 제목</th>
-                            </tr> 
-                        </MDBTableHead>
-                        { print_table(load_table(dataArr, selectedNum)) }
-                    </MDBTable>
+                        <Table style={{marginTop:"7px",border:"white none", width: "100%"}}>
+                            <tbody>
+                                <tr>
+                                    { print_checktable(load_checktable(dataArr, selectedNum)) }
+                                </tr>
+                            </tbody>
+                        </Table>
+                        </Card>
+                        <h style={{fontWeight:"bold",marginLeft:"5px",marginTop:"20px",marginBottom:"5px",fontFamily:"GowunBatang-Regular",fontSize:"16px"}}>
+                            주차별 학습
+                        </h>
+                        <MDBTable style={{fontFamily: "SUIT-Regular",height:"100px",width:"100%", fontSize:"15px", textAlign: "center", border: "1px solid #dddddd",borderRadius:"10px"}}>
+                            <MDBTableHead>
+                                <tr>
+                                    <th style={{textAlign:"left",paddingLeft:"13px",border:"1px solid #dddddd", background:"#eeeeee" }}>학습 주차</th>
+                                    <th style={{textAlign:"left",paddingLeft:"13px",border:"1px solid #dddddd", background:"#eeeeee" }}>출석여부</th>
+                                    <th style={{textAlign:"left",paddingLeft:"13px",border:"1px solid #dddddd", background:"#eeeeee" }}>진행률</th>
+                                    <th style={{textAlign:"left",paddingLeft:"25px",border:"1px solid #dddddd", background:"#eeeeee" }}>동영상 제목</th>
+                                </tr> 
+                            </MDBTableHead>
+                            { print_table(load_table(dataArr, selectedNum)) }
+                        </MDBTable>
                     </Card>
                 </div>
             }
