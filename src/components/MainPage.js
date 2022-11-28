@@ -7,6 +7,8 @@ import { getCrawlData } from "./Crawl";
 import React from 'react';
 import TabMenu from "../TabMenu";
 import Button from '@material-ui/core/Button';
+import { MDBTable,MDBBtn, MDBTableHead, MDBTableBody } from 'mdb-react-ui-kit';
+import Card from 'react-bootstrap/Card';
 import styled from "styled-components";
 import { CircularProgressbar , buildStyles} from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
@@ -16,6 +18,7 @@ const MainPage = ({ sessionKey }) => {
     const [respond, setRespond] = useState();
     const [dataArr, setDataArr] = useState();
     const [loading, setLoading] = useState(false);
+    const [title, setTitle ] = useState();
     const timeoutId = useRef();
     const [selectedNum, setSelectedNum] = useState(0);
     const navigate = useNavigate();
@@ -107,20 +110,26 @@ const MainPage = ({ sessionKey }) => {
             if(savedData !== null)
                 setDataArr(JSON.parse(savedData));
         }
+        {dataArr && setTitle(dataArr[selectedNum].title)}
     }, [dataArr]);
 
+    useEffect(()=>{
+        console.log(title);
+    },[title])
+   
     const subject2 = (data, selectedNum) =>
         data.map((n, i) => {
             return (
+
                 <th>
                     {
                         i !== selectedNum ?
-                            <Button key = {i} id = { i + "-title" } onClick={ () => setSelectedNum(i) } variant="contained">
+                            <Button key = {i} id = { i + "-title" } onClick={ () => {setSelectedNum(i); setTitle(n.title) } } variant="contained" style={{border:"1px ", fontFamily:"SUIT-Regular"}}>
                                 { n.title }
                             </Button> :
-                            <div>
+                           <Button style={{color:"#222222", background:"#cccccc", border:"4px #dddddd", fontWeight:"normal",fontFamily:"SUIT-Regular"}}>
                                 {n.title}
-                            </div> 
+                            </Button>
                     }
                 </th>
             )
@@ -153,24 +162,42 @@ const MainPage = ({ sessionKey }) => {
             checkArr[index].maxSum += arr[a].realmax;
         }
 
-        return checkArr.map(item => {
+        return (
+            
+            checkArr.map(item => {
             const percent = item.curSum / item.maxSum * 100;
             return (
-                <td align= "center" style={{ border: "1px solid rea", width: "auto", height: "auto", padding: "10px", Align: "center" }}>
-                    { item.week + "주차" } 
-                    <div style={{ width: "auto", height: "auto", padding: "25px" }}>
+                <>
+                <td align= "center" style={{ border: "none",width: "auto", height: "auto", padding: "0px", fontSize:"13px" }}>
+                    <h style={{marginBottom:"2px"}}>{ item.week + "주차" } </h>
+                    <div style={{ padding:"10px" }}>
+                        {(percent).toFixed(0) == 100 ? 
                         <CircularProgressbar value={(percent).toFixed(0)} text={(percent).toFixed(0)}  
                             styles={buildStyles({
-                                textColor: "#2A3990",
-                                pathColor: "#2A3990",
-                                trailColor: "#D23369",
-                                textSize: "28px"
+                                textColor: "#80489C",
+                                pathColor: "#80489C",
+                                trailColor: "#dddddd",
+                                textSize: "20px",
                             })}
                         />
+                        :
+                         <CircularProgressbar value={(percent).toFixed(0)} text={(percent).toFixed(0)}  
+                            styles={buildStyles({
+                                textColor: "#C060A1",
+                                pathColor: "#C060A1",
+                                trailColor: "#dddddd",
+                                textSize: "20px",
+                            })}
+                            
+                        />
+            }
                     </div>
                 </td>
+                </>
             );
-        });
+        })
+   
+        )
 
 
     }
@@ -194,57 +221,74 @@ const MainPage = ({ sessionKey }) => {
     const print_table =(arr)=>{
         return (arr.map((info)=>     
         (
-            <tbody>
-                <tr style={{height:"10px"}}>
-                    <th align="center" style={{verticalAlign:"middle"}} >
+            <MDBTableBody style={{height:"10px"}}>
+                <tr style={{height:"10px"}} >
+                    <th align="center" style={{textAlign:"left",paddingLeft:"15px",border:"1px solid #eeeeee",width:"90px",height:"10px", fontWeight:"normal",verticalAlign:"middle"}} >
                         {info.weekends+1+"주차"}
                     </th>
-                    <th align="center" style={{ verticalAlign:"middle", padding:"50px",Align:"center" }}>
+                    <th  style={{paddingLeft:"15px", border:"1px solid #eeeeee",textAlign:"left",width:"150px", verticalAlign:"middle", fontWeight:"normal" }}>
                      {(info.cur/info.max*100).toFixed(0)>100 ? "100": (info.cur/info.max*100).toFixed(0)}% {info.cur>info.max ? "출석완료":"결석"} 
                     </th>
-                    <th align="center" style={{ width: 150,padding:"20px",Align:"center" }}>
-                        <div  style={{   padding:"20px" }}>
-                            <CircularProgressbar value={(info.cur/info.max*100).toFixed(0)} text={(info.cur/info.max*100).toFixed(0)>=100 ? "100" : (info.cur/info.max*100).toFixed(0)}/>
+                    <th align="center" style={{ border:"1px solid #eeeeeee", width: "80px" }}>
+                        <div  style={{ height:"70px" }}>
+                            <CircularProgressbar 
+                            value={(info.cur/info.max*100).toFixed(0)} text={(info.cur/info.max*100).toFixed(0)>=100 ? "100" : (info.cur/info.max*100).toFixed(0)}/>
                         </div>
                     </th>
-                    <th align="center"style={{ verticalAlign:"middle", padding:"20px",Align:"center" }} >
-                        <a href={info.url}>{info.head}</a>
+                    <th  style={{ border:"1px solid #eeeeee",textAlign:"left",paddingLeft:"15px",paddingTop:"25px", verticalAlign:"center" }} >
+                        <MDBBtn style={{textDecorate:"none"}}  color='link' rounded size='sm' href={info.url} target='_blank'>{info.head}</MDBBtn>
                     </th>
                 </tr>
-            </tbody>
+            </MDBTableBody>
         )))
     }
        
     return (
-        <div className="contentBody">
+        <div className="contentBody" style={{marginLeft:"13%", marginRight:"13%"}}>
             {
                 !dataArr ? <Loading/> : 
-                <div className="autoMargin" style={ { width: "90%" } }>
-                    <table style={{ width:"100%", textAlign: "center" }}>
-                        <thead>
+                
+                <div className="autoMargin" style={ { width: "100%" } }>
+                    <h1 style={{marginLeft:"2%",fontFamily:"NanumSquareNeo-Variable"}}>
+                        강좌
+                    </h1>
+                    
+                    <table style={{ marginTop:"10px",marginBottom:"20px",width:"100%", textAlign: "center" }}>
+                        <tbody>
                             <tr>
                                 { subject2(dataArr, selectedNum) }
                             </tr>
-                        </thead>
+                        </tbody>
                     </table>
-                    <table style={{ width: "100%", border: "1px solid #dddddd"}}>
-                        <thead>
+                    <Card style={{padding:"40px"}}>
+                    { title && <h1 style={{marginBottom:"15px",fontSize:"31px",fontFamily:"NanumSquareNeo-Variable",fontWeight:"lighter"}}>{title}</h1> }
+                    <h style={{fontWeight:"bold",marginLeft:"5px",marginTop:"10px",marginBottom:"5px",fontFamily:"GowunBatang-Regular"}}>
+                        수업 진행률
+                    </h>
+                    <Card style={{fontFamily:"NanumSquareNeo-Variable",height:"120px",marginBottom:"20px"}}>
+                    <Table style={{marginTop:"7px",border:"white none", width: "100%"}}>
+                        <tbody>
                             <tr>
                                 { print_checktable(load_checktable(dataArr, selectedNum)) }
                             </tr>
-                        </thead>
-                    </table>
-                    <Table style={{ width:"100%", fontSize:"15px", textAlign: "center", border: "1px solid #dddddd"}}>
-                        <thead>
-                            <tr>
-                                <th style={{width:"30", backgroundColor: "#eeeeee", textAlign: "center" }}>주차</th>
-                                <th style={{ backgroundColor: "#eeeeee", textAlign: "center" }}>출석여부</th>
-                                <th style={{ backgroundColor: "#eeeeee", textAlign: "center" }}>진행률</th>
-                                <th style={{ backgroundColor: "#eeeeee", textAlign: "center" }}>동영상 제목</th>
-                            </tr> 
-                        </thead>
-                        { print_table(load_table(dataArr, selectedNum)) }
+                        </tbody>
                     </Table>
+                    </Card>
+                    <h style={{fontWeight:"bold",marginLeft:"5px",marginTop:"20px",marginBottom:"5px",fontFamily:"GowunBatang-Regular",fontSize:"16px"}}>
+                        주차별 학습
+                    </h>
+                    <MDBTable style={{fontFamily: "SUIT-Regular",height:"100px",width:"100%", fontSize:"15px", textAlign: "center", border: "1px solid #dddddd",borderRadius:"10px"}}>
+                        <MDBTableHead>
+                            <tr>
+                                <th style={{textAlign:"left",paddingLeft:"13px",border:"1px solid #dddddd", background:"#eeeeee" }}>학습 주차</th>
+                                <th style={{textAlign:"left",paddingLeft:"13px",border:"1px solid #dddddd", background:"#eeeeee" }}>출석여부</th>
+                                <th style={{textAlign:"left",paddingLeft:"13px",border:"1px solid #dddddd", background:"#eeeeee" }}>진행률</th>
+                                <th style={{textAlign:"left",paddingLeft:"25px",border:"1px solid #dddddd", background:"#eeeeee" }}>동영상 제목</th>
+                            </tr> 
+                        </MDBTableHead>
+                        { print_table(load_table(dataArr, selectedNum)) }
+                    </MDBTable>
+                    </Card>
                 </div>
             }
         </div>
